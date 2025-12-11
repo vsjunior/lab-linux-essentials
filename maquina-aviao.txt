@@ -1,0 +1,1034 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║            MÁQUINA AVIÃO - OTIMIZAR LINUX PARA INTERNET                        ║
+║                                                                                ║
+║     Como deixar sua máquina limpa, rápida e leve para navegar                  ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+1. CONCEITOS - POR QUE MÁQUINA FICA LENTA?
+═══════════════════════════════════════════════════════════════════════════════════
+
+RAZÕES PRINCIPAIS:
+
+Lixo acumulado:
+├─ Arquivos temporários (/tmp)
+├─ Cache de programas
+├─ Histórico desnecessário
+├─ Duplicatas de downloads
+└─ "Restos" de desinstalações
+
+Muitos programas rodando:
+├─ Serviços desnecessários
+├─ Startups auto-iniciam
+├─ Processos em background
+├─ Consumindo RAM
+
+Disco cheio:
+├─ Sistema operacional lento com disco cheio
+├─ Cache não comprimido
+├─ Logs gigantes
+└─ Arquivos antigos
+
+
+RESULTADO:
+
+❌ Máquina lenta
+❌ Internet travada
+❌ Navegação difícil
+❌ Sistema irresponsivo
+
+✅ OBJETIVO: Deixar tudo limpo e rápido!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+2. VERIFICAÇÃO INICIAL - DIAGNOSTICAR O PROBLEMA
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ESPAÇO EM DISCO:
+───────────────────
+
+df -h
+
+Resultado:
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       500G  450G   50G  90%  /           ← ⚠️ CHEIO!
+/dev/sda2       100G   10G   90G  10%  /home       ← OK
+
+Se Use% > 80%, disco está muito cheio!
+
+
+VER MEMÓRIA RAM:
+────────────────
+
+free -h
+
+Resultado:
+               total        used        free      shared  buff/cache
+Mem:            15Gi       8.5Gi       2.3Gi       1.2Gi       4.7Gi
+Swap:           2.0Gi       0.5Gi       1.5Gi
+
+⚠️ Used > 80% = pouca memória livre
+✅ Free > 20% = OK
+
+
+VER PROCESSOS PESADOS:
+──────────────────────
+
+ps aux --sort=-%mem | head -10
+
+Resultado:
+USER     PID %CPU %MEM     VSZ    RSS COMMAND
+root       1  0.0  0.1  19356  2892 init
+usuario 1234 45.2  15.3 2456M 2450M firefox    ← Comendo muita RAM!
+usuario 5678  8.5   8.2 1234M 1300M chrome
+usuario 9012  2.1   4.5  567M  720M python
+
+⚠️ Processos usando > 10% cada podem ser problema
+
+
+VER PROCESSOS RODANDO:
+──────────────────────
+
+systemctl list-units --type=service --state=running
+
+Resultado:
+UNIT                           LOAD   ACTIVE SUB     DESCRIPTION
+accounts-daemon.service        loaded active running Accounts Service
+bluetooth.service              loaded active running Bluetooth service
+cups.service                   loaded active running Cups Printing Service
+... (muitos mais)
+
+💡 Alguns você pode desativar
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+3. PASSO 1 - LIMPEZA DE CACHE
+═══════════════════════════════════════════════════════════════════════════════════
+
+LIMPAR CACHE DO SISTEMA:
+────────────────────────
+
+sync                                        # Sincronizar disco
+
+sudo sysctl -w vm.drop_caches=3
+
+Resultado:
+├─ Libera cache não usado
+├─ RAM fica disponível
+└─ Pode ficar um pouco lento por segundos
+
+⚠️ Seguro usar
+
+
+LIMPAR CACHE APT (Debian/Ubuntu):
+──────────────────────────────────
+
+sudo apt clean                              # Remove pacotes baixados
+sudo apt autoclean                          # Remove pacotes antigos
+
+Resultado:
+├─ Libera espaço em disco
+├─ Seguro (pode baixar novamente se precisar)
+└─ Típico: 500MB a 2GB liberados
+
+
+LIMPAR CACHE DNF/YUM (RedHat/Fedora):
+───────────────────────────────────────
+
+sudo dnf clean all
+
+Resultado:
+├─ Mesma coisa que apt clean
+├─ Libera 500MB a 2GB
+└─ Seguro
+
+
+LIMPAR CACHE PIP (Python):
+────────────────────────
+
+pip cache purge
+
+Resultado:
+├─ Remove arquivos Python baixados
+├─ Tipicamente 100-300MB
+└─ Seguro
+
+
+LIMPAR CACHE NPM (Node.js):
+────────────────────────────
+
+npm cache clean --force
+
+Resultado:
+├─ Remove cache npm
+├─ Tipicamente 100-500MB
+└─ Seguro
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+4. PASSO 2 - LIMPAR ARQUIVOS TEMPORÁRIOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+LIMPAR /tmp:
+─────────────
+
+sudo rm -rf /tmp/*
+sudo rm -rf /var/tmp/*
+
+Resultado:
+├─ Remove arquivos temporários do sistema
+├─ Tipicamente 100MB-1GB
+├─ Totalmente seguro
+└─ Sistema cria novamente se precisar
+
+⚠️ Não rodar se programas criticos estão salvando em /tmp
+
+
+LIMPAR LIXEIRA (Trash):
+───────────────────────
+
+rm -rf ~/.local/share/Trash/*
+rm -rf ~/.Trash/*
+
+Resultado:
+├─ Esvazia lixeira
+├─ Tipicamente 100MB-5GB
+├─ Seguro (estava pra deletar mesmo)
+└─ Arquivos são permanentemente removidos
+
+
+LIMPAR DOWNLOADS:
+──────────────────
+
+ls -lh ~/Downloads                          # Ver o que tem
+du -sh ~/Downloads                          # Ver tamanho
+
+Depois, remover:
+rm ~/Downloads/*                            # Deletar tudo
+ou manualmente:
+rm ~/Downloads/arquivo-velho.iso            # Deletar específico
+
+
+LIMPAR CACHE DO NAVEGADOR:
+
+Firefox:
+├─ Preferences → Privacy & Security
+├─ Cookies and Site Data → Clear Data
+├─ Ou: rm -rf ~/.mozilla/firefox/*/cache/
+
+Chrome:
+├─ Settings → Privacy and security → Clear browsing data
+├─ Ou: rm -rf ~/.cache/google-chrome/
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+5. PASSO 3 - LIMPAR LOGS ANTIGOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER TAMANHO DE LOGS:
+────────────────────
+
+du -sh /var/log
+
+Resultado:
+2.5G    /var/log            ← Pode ser bem grande!
+
+
+LIMPAR LOGS:
+─────────────
+
+sudo journalctl --vacuum=7d                 # Manter últimos 7 dias
+ou
+sudo journalctl --vacuum=100M                # Manter últimos 100MB
+
+Resultado:
+├─ Remove logs antigos
+├─ Tipicamente libera 500MB-2GB
+├─ Seguro (logs são histórico)
+└─ Sistema cria novos normalmente
+
+Ver quanto vai liberar:
+sudo journalctl --disk-usage
+
+ANTES: 2.5G
+DEPOIS: 300M
+
+
+LIMPAR /VAR/LOG:
+─────────────────
+
+sudo find /var/log -type f -name "*.gz" -delete    # Remove .gz comprimidos
+sudo find /var/log -type f -name "*.1" -delete     # Remove logs rotacionados
+
+ou simplesmente:
+sudo truncate -s 0 /var/log/syslog                 # Zera arquivo de log
+
+⚠️ Tome cuidado, pode precisar de sudo
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+6. PASSO 4 - DESATIVAR SERVIÇOS DESNECESSÁRIOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER SERVIÇOS RODANDO:
+─────────────────────
+
+systemctl list-units --type=service --state=running | grep -v "loaded"
+
+Resultado:
+accounts-daemon.service
+bluetooth.service
+cups.service
+... (muitos)
+
+SERVIÇOS SEGUROS DE DESATIVAR (se não usa):
+─────────────────────────────────────────────
+
+Bluetooth (se não usa wireless):
+sudo systemctl stop bluetooth
+sudo systemctl disable bluetooth
+
+Cups (impressora):
+sudo systemctl stop cups
+sudo systemctl disable cups
+
+Avahi (descoberta de rede):
+sudo systemctl stop avahi-daemon
+sudo systemctl disable avahi-daemon
+
+Colord (gerenciar cores):
+sudo systemctl stop colord
+sudo systemctl disable colord
+
+GDPR/gdm (gerenciador de login):
+├─ ❌ NÃO desative! Precisa para login
+
+X11VNC (acesso remoto):
+├─ Se não usa:
+sudo systemctl stop vncserver
+sudo systemctl disable vncserver
+
+
+VERIFICAR SERVIÇO ANTES DE DESATIVAR:
+──────────────────────────────────────
+
+systemctl status [serviço]              # Ver o que faz
+
+Se mostrar "inactive" = não está rodando
+
+
+REATIVAR SE PRECISAR:
+──────────────────────
+
+sudo systemctl enable [serviço]
+sudo systemctl start [serviço]
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+7. PASSO 5 - DESATIVAR PROGRAMAS NA STARTUP
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER APLICAÇÕES NA STARTUP:
+───────────────────────────
+
+GNOME (Ubuntu/Fedora):
+├─ Activities → Startup Applications
+├─ Ver o que inicia automaticamente
+├─ Desativar o que não precisa
+
+PLASMA (KDE):
+├─ System Settings → Startup and Shutdown → Autostart
+├─ Remover programas desnecessários
+
+KDE (simples):
+├─ ~/.config/autostart/
+└─ Ver e deletar arquivos .desktop
+
+
+REMOVER MANUALMENTE:
+─────────────────────
+
+ls ~/.config/autostart/
+
+Resultado:
+firefox.desktop
+spotify.desktop
+dropbox.desktop
+
+Para remover:
+rm ~/.config/autostart/spotify.desktop
+rm ~/.config/autostart/dropbox.desktop
+
+⚠️ Firefox talvez queira manter!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+8. PASSO 6 - DESATIVAR VISUAL EFFECTS
+═══════════════════════════════════════════════════════════════════════════════════
+
+GNOME (Ubuntu):
+────────────────
+
+Settings → Accessibility → Display → Reduce Motion = ON
+
+Settings → Appearance → Style → Dark/Light (se tiver muito overhead)
+
+Desabilitar extensões:
+Extensions → Desativar tudo o que não usa
+
+PLASMA (KDE):
+──────────────
+
+System Settings → Workspace Behavior
+├─ Desktop Effects → Disable All
+├─ Animations → None
+├─ Transparency Effects = OFF
+
+System Settings → Appearance
+├─ Global Theme → Breeze (mais leve)
+├─ Desktop Theme → Oxygen (mais leve)
+
+
+XFCE (Leve):
+─────────────
+
+Já é bem otimizado!
+
+Settings → Windows Manager Tweaks
+├─ Compositor → Disable (se muito lento)
+
+
+RESULTADO:
+───────────
+
+├─ Máquina mais responsiva
+├─ Menos uso de GPU
+├─ Navegação mais rápida
+└─ Visualmente menos bonito, mas funcional
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+9. PASSO 7 - OTIMIZAR NAVEGADOR
+═══════════════════════════════════════════════════════════════════════════════════
+
+FIREFOX:
+─────────
+
+about:config na barra de endereço
+
+Procure e ajuste:
+browser.cache.disk.max_size = 10485760          # 10MB de cache
+browser.sessionstore.max_tabs_undo = 0           # Não salvar abas fechadas
+dom.max_script_run_time = 20                     # Timeout scripts
+network.http.keep-alive.timeout = 30             # Timeout conexão
+
+
+CHROME:
+────────
+
+Settings → Privacy and security
+├─ Delete cookies on exit = ON
+├─ Preload pages = OFF
+├─ Safe Browsing = Standard (menos uso de RAM)
+
+Settings → Performance
+├─ Efficiency mode = ON (Chrome 119+)
+├─ Memory saver = ON
+├─ Battery saver = ON (se laptop)
+
+
+DICAS GERAIS:
+──────────────
+
+├─ Limite de abas: máximo 10 abas abertas
+├─ Remova extensões desnecessárias
+├─ Desative notificações dos sites
+├─ Limpe cache regularmente
+└─ Reinicie navegador diariamente
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+10. PASSO 8 - OTIMIZAR DISCO
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ARQUIVOS GRANDES:
+──────────────────────
+
+du -sh ~/* | sort -rh | head -10
+
+Resultado:
+5.2G    /home/usuario/Videos
+3.1G    /home/usuario/Downloads
+2.4G    /home/usuario/.cache
+1.8G    /home/usuario/Documentos
+...
+
+⚠️ Identifique o que consome mais espaço
+
+
+LOCALIZAR DUPLICATAS:
+─────────────────────
+
+sudo fdupes -r /home -d              # Encontra e deleta duplicatas
+
+ou instalar:
+sudo apt install fdupes -y
+
+
+LIMPAR ARQUIVOS ANTIGOS:
+────────────────────────
+
+find /home/usuario -type f -mtime +365 -size +100M    # 1 ano e > 100MB
+
+Depois delete:
+find /home/usuario -type f -mtime +365 -size +100M -delete
+
+
+COMPRIMIR ARQUIVOS ANTIGOS:
+─────────────────────────────
+
+tar -czf arquivo-velho.tar.gz /path/para/arquivos-antigos
+rm -rf /path/para/arquivos-antigos
+
+Resultado:
+├─ Reduz para ~30% do tamanho original
+├─ Libera muito espaço
+├─ Ainda pode acessar se precisar
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+11. PASSO 9 - AUMENTAR VELOCIDADE INTERNET
+═══════════════════════════════════════════════════════════════════════════════════
+
+TESTAR VELOCIDADE ATUAL:
+────────────────────────
+
+speedtest-cli                               # Linha de comando
+# ou
+fast                                        # Mais simples
+
+Instalar:
+sudo apt install speedtest-cli -y
+
+Rodar:
+speedtest-cli --simple                      # Down / Up Mbps
+
+
+OTIMIZAR DNS:
+───────────────
+
+DNS = Traduz google.com em IP
+
+Editora:
+sudo nano /etc/resolv.conf
+
+Adicione (Google DNS - rápido):
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+ou (Cloudflare DNS - ainda mais rápido):
+nameserver 1.1.1.1
+nameserver 1.0.0.1
+
+Ou via Network Settings:
+├─ Settings → Network
+├─ Wired/WiFi → DNS
+├─ Manual: 8.8.8.8 e 8.8.4.4
+
+
+VERIFICAR MTU:
+──────────────
+
+ip link show
+
+Resultado:
+eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500
+
+1500 é padrão, está OK.
+
+Se quer otimizar:
+sudo ip link set dev eth0 mtu 1500           # Deixa padrão
+
+
+DESATIVAR IPv6 (se não usa):
+──────────────────────────────
+
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+
+Resultado:
+├─ Mais rápido se IPv6 problemático
+├─ Menos traffic
+└─ Geralmente não muda nada (mantém ativado)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+12. PASSO 10 - SWAPPINESS (USAR SSD COMO RAM)
+═══════════════════════════════════════════════════════════════════════════════════
+
+ENTENDER SWAP:
+
+Swap = Usar disco como RAM quando RAM está cheia
+
+⚠️ MUITO mais lento que RAM
+
+Padrão: 60 (usa swap bastante)
+Melhor: 10 (usa swap pouco)
+
+
+VER SWAPPINESS ATUAL:
+──────────────────────
+
+cat /proc/sys/vm/swappiness
+
+Resultado:
+60              ← Valor padrão
+
+
+REDUZIR SWAPPINESS:
+────────────────────
+
+sudo sysctl -w vm.swappiness=10
+
+Resultado:
+├─ Sistema prefere manter em RAM
+├─ Usa swap só se absolutamente necessário
+├─ Mais rápido se tiver RAM suficiente
+└─ Sistema pode travarem falta de RAM
+
+⚠️ Só faça se tiver 8GB+ de RAM
+
+
+DEIXAR PERMANENTE:
+───────────────────
+
+sudo nano /etc/sysctl.conf
+
+Adicione ao final:
+vm.swappiness=10
+
+Salve: Ctrl+O, Enter, Ctrl+X
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+13. SCRIPT COMPLETO DE LIMPEZA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+CRIAR SCRIPT "MÁQUINA AVIÃO":
+──────────────────────────────
+
+cat > ~/airplane-mode.sh << 'EOF'
+#!/bin/bash
+
+echo "🚀 MÁQUINA AVIÃO - Otimizando Sistema..."
+
+# 1. Sincronizar disco
+echo "1. Sincronizando disco..."
+sync
+
+# 2. Limpar cache
+echo "2. Limpando cache do sistema..."
+sudo sysctl -w vm.drop_caches=3 > /dev/null
+
+# 3. Limpar pacotes apt
+echo "3. Limpando cache apt..."
+sudo apt clean
+sudo apt autoclean
+sudo apt autoremove -y
+
+# 4. Limpar /tmp
+echo "4. Limpando arquivos temporários..."
+sudo rm -rf /tmp/*
+sudo rm -rf /var/tmp/*
+
+# 5. Limpar lixeira
+echo "5. Esvaziando lixeira..."
+rm -rf ~/.local/share/Trash/*
+rm -rf ~/.Trash/*
+
+# 6. Limpar logs
+echo "6. Limpando logs antigos..."
+sudo journalctl --vacuum=7d > /dev/null
+
+# 7. Limpar cache do navegador
+echo "7. Limpando cache do navegador..."
+rm -rf ~/.mozilla/firefox/*/cache/
+rm -rf ~/.cache/google-chrome/Default/Cache/
+
+# 8. Mostrar espaço liberado
+echo ""
+echo "✅ OTIMIZAÇÃO COMPLETA!"
+echo ""
+echo "Espaço em disco:"
+df -h | grep -E '^/dev/'
+echo ""
+echo "Memória RAM:"
+free -h | grep "^Mem"
+
+EOF
+
+chmod +x ~/airplane-mode.sh
+
+Usar:
+./airplane-mode.sh
+
+
+VERSÃO COM MAIS LIMPEZA:
+─────────────────────────
+
+cat > ~/airplane-mode-aggressive.sh << 'EOF'
+#!/bin/bash
+
+echo "🚀 MÁQUINA AVIÃO AGRESSIVA..."
+
+# Confirmação
+read -p "Isso vai deletar TUDO desnecessário. Continuar? (s/n): " confirm
+if [ "$confirm" != "s" ]; then
+    echo "Cancelado"
+    exit 1
+fi
+
+# Parar Firefox e Chrome
+killall firefox chromium-browser chrome 2>/dev/null
+
+# Limpeza agressiva
+sudo sysctl -w vm.drop_caches=3
+sudo apt clean
+sudo apt autoclean
+sudo apt autoremove -y
+sudo rm -rf /tmp/*
+sudo rm -rf /var/tmp/*
+sudo rm -rf ~/.cache/*
+rm -rf ~/.local/share/Trash/*
+rm -rf ~/Downloads/*
+sudo journalctl --vacuum=1d
+
+# Desfragmentar (se não SSD)
+# sudo e4defrag -c /dev/sda1
+
+echo "✅ MÁQUINA LIMPISSIMA!"
+df -h | grep -E '^/dev/'
+free -h | grep "^Mem"
+
+EOF
+
+chmod +x ~/airplane-mode-aggressive.sh
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+14. TABELA DE REFERÊNCIA - COMANDOS RÁPIDOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────┬──────────────────────────────────────┐
+│ AÇÃO                                 │ COMANDO                              │
+├──────────────────────────────────────┼──────────────────────────────────────┤
+│ Ver espaço em disco                  │ df -h                                │
+│ Ver memória RAM                      │ free -h                              │
+│ Ver processos pesados                │ ps aux --sort=-%mem | head -5        │
+│                                      │                                      │
+│ Limpar cache apt                     │ sudo apt clean                       │
+│ Limpar pacotes antigos               │ sudo apt autoclean                   │
+│ Remover pacotes não usados           │ sudo apt autoremove -y               │
+│                                      │                                      │
+│ Liberar cache sistema                │ sudo sysctl -w vm.drop_caches=3      │
+│                                      │                                      │
+│ Limpar /tmp                          │ sudo rm -rf /tmp/*                   │
+│ Limpar /var/tmp                      │ sudo rm -rf /var/tmp/*               │
+│ Limpar lixeira                       │ rm -rf ~/.local/share/Trash/*        │
+│                                      │                                      │
+│ Limpar logs antigos                  │ sudo journalctl --vacuum=7d          │
+│ Ver tamanho de logs                  │ sudo journalctl --disk-usage         │
+│                                      │                                      │
+│ Ver serviços rodando                 │ systemctl list-units --type=service  │
+│ Parar serviço                        │ sudo systemctl stop [serviço]        │
+│ Desativar na startup                 │ sudo systemctl disable [serviço]     │
+│                                      │                                      │
+│ Ver arquivos maiores                 │ du -sh ~/* | sort -rh | head        │
+│ Encontrar duplicatas                 │ sudo fdupes -r /home                 │
+│                                      │                                      │
+│ Testar velocidade internet           │ speedtest-cli --simple               │
+│ Ver DNS atual                        │ cat /etc/resolv.conf                 │
+│                                      │                                      │
+│ Ver swappiness                       │ cat /proc/sys/vm/swappiness          │
+│ Reduzir swappiness                   │ sudo sysctl -w vm.swappiness=10      │
+│                                      │                                      │
+│ Rodar limpeza completa               │ ~/airplane-mode.sh                   │
+└──────────────────────────────────────┴──────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+15. PLANO DE LIMPEZA SEMANAL
+═══════════════════════════════════════════════════════════════════════════════════
+
+SEGUNDA LIMPEZA (1 minuto):
+──────────────────────────
+
+sudo apt clean
+sudo apt autoclean
+rm -rf ~/.local/share/Trash/*
+free -h
+
+
+LIMPEZA COMPLETA (5 minutos, toda semana):
+────────────────────────────────────────
+
+./airplane-mode.sh
+
+
+LIMPEZA PROFUNDA (15 minutos, mensal):
+─────────────────────────────────────
+
+./airplane-mode-aggressive.sh
+
+e depois:
+
+du -sh ~/* | sort -rh | head -10          # Ver o que consome espaço
+# Remover arquivos antigos/grandes manualmente
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+16. MONITORAMENTO CONTÍNUO
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER DASHBOARD:
+───────────────
+
+htop                                        # Dashboard interativo
+ou
+watch -n 1 "free -h; echo '---'; df -h"    # Atualiza a cada 1s
+
+
+ALERTAR SE DISCO CHEIO:
+────────────────────────
+
+cat > ~/check-disk.sh << 'EOF'
+#!/bin/bash
+
+LIMIT=80    # 80% de uso
+
+USAGE=$(df / | tail -1 | awk '{print $5}' | cut -d'%' -f1)
+
+if [ "$USAGE" -gt "$LIMIT" ]; then
+    echo "⚠️  DISCO CHEIO! $USAGE% usado"
+    echo "Rodando limpeza..."
+    ~/airplane-mode.sh
+else
+    echo "✅ Disco OK: $USAGE% usado"
+fi
+EOF
+
+chmod +x ~/check-disk.sh
+
+Usar:
+./check-disk.sh
+
+
+AUTOMATIZAR LIMPEZA SEMANAL:
+──────────────────────────────
+
+crontab -e
+
+Adicionar:
+# Toda segunda-feira às 3 da manhã
+0 3 * * 1 /home/usuario/airplane-mode.sh
+
+# Toda sexta-feira às 18h
+0 18 * * 5 /home/usuario/airplane-mode.sh
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+17. TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: Máquina ainda está lenta
+────────────────────────────────────
+
+1. Verificar disco:
+   df -h | grep -E '^/dev/'
+   
+   Se > 85%: rodá airplane-mode-aggressive.sh
+
+2. Verificar memória:
+   free -h | grep "^Mem"
+   
+   Se used > 80%: kill programas pesados (killer-process.txt)
+
+3. Verificar processos:
+   ps aux --sort=-%cpu | head -5
+   
+   Se algum > 50% CPU: matar com kill -9
+
+4. Reiniciar:
+   sudo reboot
+   
+   Muitos problemas resolvem com reboot
+
+
+PROBLEMA: Firefox/Chrome comendo muita RAM
+─────────────────────────────────────────
+
+Kill e reabrir:
+killall -9 firefox
+firefox &
+
+ou limpar cache:
+rm -rf ~/.mozilla/firefox/*/cache/
+
+
+PROBLEMA: Internet lenta mesmo depois de limpeza
+──────────────────────────────────────────────
+
+1. Testar velocidade:
+   speedtest-cli --simple
+
+2. Trocar DNS:
+   sudo nano /etc/resolv.conf
+   # Trocar por 8.8.8.8
+
+3. Reiniciar modem/roteador:
+   Desligar 10 segundos
+
+4. Limpar cache navegador:
+   Firefox: Settings → Privacy → Clear Data
+   Chrome: Settings → Clear browsing data
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+18. CHECKLIST FINAL - MÁQUINA AVIÃO PRONTA
+═══════════════════════════════════════════════════════════════════════════════════
+
+ANTES DE USAR:
+
+□ Rodou airplane-mode.sh                    # Limpeza completa
+  
+□ Verificou espaço em disco
+  df -h                                     # Deve estar < 70%
+  
+□ Verificou memória RAM
+  free -h                                   # Free > 2GB
+  
+□ Matou processos pesados
+  ps aux --sort=-%mem | head -5
+  
+□ Desativou serviços desnecessários
+  bluetooth, cups, colord
+  
+□ Limpou cache do navegador
+  Firefox / Chrome → Settings
+  
+□ Otimizou DNS
+  /etc/resolv.conf → Google DNS (8.8.8.8)
+  
+□ Abas do navegador < 10
+  Feche abas desnecessárias
+  
+□ Testou velocidade internet
+  speedtest-cli --simple
+  
+□ Agendou limpeza semanal
+  crontab -e → adicionar comando
+
+
+✅ MÁQUINA AVIÃO PRONTA PARA VOAR!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+19. RESUMO - O QUE FAZER AGORA
+═══════════════════════════════════════════════════════════════════════════════════
+
+IMEDIATO (5 minutos):
+─────────────────────
+
+1. Criar script de limpeza:
+   cat > ~/airplane-mode.sh << [copiar do script acima]
+   chmod +x ~/airplane-mode.sh
+
+2. Rodar limpeza:
+   ./airplane-mode.sh
+
+3. Reiniciar navegador:
+   killall firefox
+   firefox &
+
+
+HOJE (15 minutos):
+──────────────────
+
+1. Desativar serviços:
+   sudo systemctl stop bluetooth
+   sudo systemctl disable bluetooth
+   
+   sudo systemctl stop cups
+   sudo systemctl disable cups
+
+2. Remover startups:
+   rm ~/.config/autostart/dropbox.desktop
+   (etc)
+
+3. Testar internet:
+   speedtest-cli --simple
+
+4. Trocar DNS (se lento):
+   sudo nano /etc/resolv.conf
+
+
+SEMANA (30 minutos):
+────────────────────
+
+1. Desativar efeitos visuais:
+   Settings → Accessibility
+   
+2. Otimizar navegador:
+   Firefox about:config
+   Chrome Settings
+
+3. Agendar limpeza automática:
+   crontab -e
+   0 3 * * 1 ~/airplane-mode.sh
+
+
+RESULTADO:
+───────────
+
+✅ Máquina leve
+✅ Navegação rápida
+✅ Internet responsiva
+✅ Menos travamentos
+✅ Tudo automático depois
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+🎯 DICAS DE OURO
+
+1. Rodar limpeza ANTES de usar máquina
+   └─ Melhor desempenho desde o início
+
+2. Limitar abas do navegador
+   └─ Máx 10 abas = máquina muito mais rápida
+
+3. Desativar notificações
+   └─ Sites não piscam constantemente = menos uso CPU
+
+4. Agendar limpeza semanal
+   └─ Automático, sem se preocupar
+
+5. Monitorar com htop
+   └─ Identifique problemas rápido
+
+6. Reiniciar navegador diariamente
+   └─ Libera memória vazada
+
+7. Usar extensões mínimas
+   └─ Cada extensão = RAM usada
+
+8. Disco sempre < 80%
+   └─ Linux fica lento com disco cheio
+
+MÁQUINA AVIÃO = ✈️ RÁPIDA DEMAIS!
+
+═══════════════════════════════════════════════════════════════════════════════════

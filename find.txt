@@ -1,0 +1,390 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║              PESQUISA NO TERMINAL LINUX - GUIA SIMPLES                         ║
+║                                                                                ║
+║                    Como procurar por arquivos e conteúdo                       ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+1. COMANDOS PRINCIPAIS DE PESQUISA
+═══════════════════════════════════════════════════════════════════════════════════
+
+Existem 4 comandos principais para procurar no Linux:
+
+┌─────────────┬──────────────────────┬────────────────────────────────────────┐
+│  Comando    │  O que faz           │  Exemplo de uso                        │
+├─────────────┼──────────────────────┼────────────────────────────────────────┤
+│ find        │ Procura por arquivos │ find /home -name "arquivo.txt"         │
+│ grep        │ Procura por texto    │ grep "palavra" arquivo.txt             │
+│ locate      │ Procura rápida       │ locate "arquivo.txt"                   │
+│ which       │ Procura programa     │ which python                           │
+└─────────────┴──────────────────────┴────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+2. FIND - PROCURAR POR ARQUIVOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando FIND é o mais completo para procurar arquivos.
+
+ESTRUTURA BÁSICA:
+─────────────────
+find [local] [opção] [valor]
+
+Exemplos:
+
+🔍 PROCURAR POR NOME:
+──────────────────────
+find . -name "arquivo.txt"              # Procura no diretório atual
+find /home -name "*.txt"                # Procura todos os .txt em /home
+find / -name "documento"                # Procura em todo o sistema
+
+🔍 PROCURAR POR TIPO:
+──────────────────────
+find . -type f                          # Procura apenas arquivos (f = file)
+find . -type d                          # Procura apenas pastas (d = directory)
+find . -type l                          # Procura links simbólicos (l = link)
+
+🔍 PROCURAR POR TAMANHO:
+─────────────────────────
+find . -size +100M                      # Arquivos maiores que 100MB
+find . -size -10M                       # Arquivos menores que 10MB
+find . -size 5M                         # Arquivos com exatamente 5MB
+
+🔍 PROCURAR POR DATA:
+──────────────────────
+find . -mtime -7                        # Modificados nos últimos 7 dias
+find . -mtime +30                       # Modificados há mais de 30 dias
+find . -atime -1                        # Acessados no último dia
+
+🔍 PROCURAR POR PROPRIETÁRIO:
+────────────────────────────────
+find . -user username                   # Arquivos do usuário "username"
+find . -group groupname                 # Arquivos do grupo "groupname"
+
+🔍 COMBINANDO CRITÉRIOS:
+──────────────────────────
+find . -name "*.pdf" -type f            # Arquivos PDF
+find . -name "*.jpg" -type f -size +1M  # Imagens JPG maiores que 1MB
+find . -type f -mtime -7 -name "*.txt"  # Arquivos .txt modificados há menos de 7 dias
+
+
+─────────────────────────────────────────────────────────────────────────────────
+EXEMPLO PRÁTICO COM FIND:
+─────────────────────────
+
+# Procurar arquivo chamado "config.txt"
+find /home -name "config.txt"
+
+# Procurar todos os arquivos de imagem
+find . -name "*.jpg" -o -name "*.png"
+
+# Procurar pastas vazias
+find . -type d -empty
+
+# Procurar arquivos que NÃO terminam em .txt
+find . -not -name "*.txt"
+
+# Encontrar e listar arquivos grandes
+find . -type f -size +100M -exec ls -lh {} \;
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+3. GREP - PROCURAR DENTRO DE ARQUIVOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando GREP procura por texto DENTRO dos arquivos.
+
+ESTRUTURA BÁSICA:
+─────────────────
+grep [opção] "texto" arquivo
+
+Exemplos:
+
+🔍 PROCURAR TEXTO SIMPLES:
+───────────────────────────
+grep "erro" arquivo.txt                 # Procura a palavra "erro"
+grep "Python" script.py                 # Procura "Python" no arquivo
+
+🔍 PROCURAR COM CONTEXTO:
+──────────────────────────
+grep -n "error" arquivo.txt             # Mostra número da linha (-n)
+grep -i "ERROR" arquivo.txt             # Ignora maiúsculas/minúsculas (-i)
+grep -c "erro" arquivo.txt              # Conta quantas vezes aparece (-c)
+
+🔍 PROCURAR EM MÚLTIPLOS ARQUIVOS:
+────────────────────────────────────
+grep "password" *.txt                   # Procura em todos os .txt
+grep "localhost" /etc/hosts             # Procura em arquivo específico
+
+🔍 PROCURAR RECURSIVAMENTE:
+─────────────────────────────
+grep -r "função" ./                     # Procura em todas as pastas
+grep -r "main" /home/user/              # Procura recursivamente em /home/user
+
+🔍 MOSTRANDO LINHAS ANTES E DEPOIS:
+───────────────────────────────────────
+grep -A 3 "erro" arquivo.txt            # Mostra 3 linhas depois (-A)
+grep -B 2 "erro" arquivo.txt            # Mostra 2 linhas antes (-B)
+grep -C 2 "erro" arquivo.txt            # Mostra 2 linhas antes E depois (-C)
+
+🔍 NEGANDO A BUSCA:
+────────────────────
+grep -v "comentário" arquivo.txt        # Mostra linhas SEM "comentário"
+grep -v "^#" arquivo.txt                # Remove linhas que começam com #
+
+
+─────────────────────────────────────────────────────────────────────────────────
+EXEMPLO PRÁTICO COM GREP:
+──────────────────────────
+
+# Procurar todas as linhas com "localhost" em um arquivo
+grep "localhost" /etc/hosts
+
+# Procurar "erro" ignorando maiúsculas
+grep -i "erro" log.txt
+
+# Procurar "import" em todos os arquivos Python
+grep -r "import" *.py
+
+# Contar quantas vezes "function" aparece
+grep -c "function" codigo.js
+
+# Ver linhas com "warning" e as 2 linhas seguintes
+grep -A 2 "warning" sistema.log
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+4. LOCATE - PROCURA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando LOCATE é mais rápido que find, mas menos flexible.
+
+⚠️  IMPORTANTE: Precisa atualizar a base de dados primeiro!
+────────────────────────────────────────────────────────────
+
+sudo updatedb                           # Atualiza base de dados (fazer periodicamente)
+
+USANDO LOCATE:
+──────────────
+locate "arquivo.txt"                    # Procura "arquivo.txt"
+locate "*.pdf"                          # Procura arquivos PDF
+locate -i "PALAVRA"                     # Ignora maiúsculas (-i)
+locate -c "arquivo"                     # Conta resultados (-c)
+
+VANTAGENS:
+──────────
+✓ Muito rápido
+✓ Procura em todo o sistema
+✓ Simples de usar
+
+DESVANTAGENS:
+─────────────
+✗ Não encontra arquivos novos (até updatedb)
+✗ Menos opções de filtro que find
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+5. WHICH - PROCURAR PROGRAMAS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando WHICH encontra onde um programa está instalado.
+
+ESTRUTURA:
+──────────
+which [nome_programa]
+
+Exemplos:
+
+which python                            # Mostra onde está o Python
+which ls                                # Mostra onde está o comando ls
+which node                              # Mostra onde está o Node.js
+which java                              # Mostra onde está o Java
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+6. COMBINANDO COMANDOS (PIPES)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Você pode combinar comandos usando | (pipe) para pesquisas mais poderosas.
+
+ESTRUTURA:
+──────────
+comando1 | comando2
+
+Exemplos:
+
+🔗 FIND + GREP:
+────────────────
+find . -type f -name "*.txt" | grep "importante"
+# Procura arquivos .txt que contenham "importante" no nome
+
+🔗 GREP + WC:
+──────────────
+grep "erro" log.txt | wc -l
+# Conta quantas linhas contêm "erro"
+
+🔗 FIND + GREP:
+────────────────
+find . -type f -name "*.log" | xargs grep "error"
+# Procura "error" em todos os arquivos .log
+
+🔗 LS + GREP:
+──────────────
+ls -la | grep "2025"
+# Lista arquivos modificados em 2025
+
+🔗 CAT + GREP:
+────────────────
+cat arquivo.txt | grep "palavra" | wc -l
+# Conta quantas vezes "palavra" aparece
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+7. ATALHOS E DICAS PRÁTICAS
+═══════════════════════════════════════════════════════════════════════════════════
+
+DICAS IMPORTANTES:
+──────────────────
+
+💡 Use aspas para procurar frases inteiras:
+   grep "mensagem de erro" arquivo.txt
+
+💡 Use . para procurar no diretório atual:
+   find . -name "*.pdf"
+
+💡 Use / para procurar em todo o sistema (cuidado!):
+   find / -name "arquivo"
+
+💡 Use ~ para procurar na pasta do usuário:
+   find ~ -name "documento.txt"
+
+💡 Use -exec para executar comando nos resultados:
+   find . -name "*.tmp" -exec rm {} \;
+   # Remove todos os arquivos .tmp
+
+💡 Use 2>/dev/null para esconder erros de permissão:
+   find / -name "arquivo" 2>/dev/null
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+8. COMPARAÇÃO RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+┌───────────┬─────────────────────────┬────────────────┬──────────────────┐
+│ Comando   │ Procura por             │ Velocidade     │ Melhor para      │
+├───────────┼─────────────────────────┼────────────────┼──────────────────┤
+│ find      │ Arquivos/pastas         │ Média/Lenta    │ Buscas complexas │
+│ grep      │ Texto dentro de arquivo │ Média          │ Conteúdo         │
+│ locate    │ Nome de arquivo         │ Rápida         │ Busca rápida     │
+│ which     │ Programas executáveis   │ Rápida         │ Localizar apps   │
+└───────────┴─────────────────────────┴────────────────┴──────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+9. EXEMPLOS DO DIA A DIA
+═══════════════════════════════════════════════════════════════════════════════════
+
+📋 CENÁRIO 1: "Perdi um arquivo, não lembro o nome"
+────────────────────────────────────────────────────
+find /home -type f -mtime -7                # Arquivos modificados há 7 dias
+find /home -type f -size +10M               # Procurar arquivos grandes
+
+📋 CENÁRIO 2: "Preciso encontrar uma função no código"
+─────────────────────────────────────────────────────────
+grep -r "function_name" ./src               # Procura recursivamente em src
+grep -rn "main" *.py                        # Mostra linha onde aparece
+
+📋 CENÁRIO 3: "Quero listar todos os arquivos .jpg"
+──────────────────────────────────────────────────────
+find . -name "*.jpg"                        # Procura todos os .jpg
+find . -name "*.jpg" -o -name "*.png"       # Procura jpg OU png
+
+📋 CENÁRIO 4: "Arquivo foi deletado, quero recuperar"
+────────────────────────────────────────────────────────
+locate "arquivo_que_era"                    # Se ainda estiver no índice
+find /home -name "*arquivo*"                # Procura parcial do nome
+
+📋 CENÁRIO 5: "Verificar quem criou este arquivo"
+──────────────────────────────────────────────────
+ls -la arquivo.txt                          # Ver proprietário
+find . -user username -name "*.txt"         # Arquivos de um usuário
+
+📋 CENÁRIO 6: "Procurar erro em logs"
+──────────────────────────────────────────
+grep -i "error" /var/log/syslog             # Procura erros
+grep -i "error" /var/log/syslog | wc -l     # Conta quantos erros
+tail -f /var/log/syslog | grep "error"      # Monitora em tempo real
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+10. DICAS DE PERFORMANCE
+═══════════════════════════════════════════════════════════════════════════════════
+
+⚡ FAZER MAIS RÁPIDO:
+──────────────────────
+
+Use locate em vez de find (se possível):
+└─ locate arquivo                    # Rápido (1-2 segundos)
+└─ find / -name arquivo              # Lento (10-30 segundos)
+
+Restrinja o escopo da busca:
+└─ find /home -name "*.txt"         # Mais rápido
+└─ find / -name "*.txt"             # Mais lento (busca todo sistema)
+
+Use -maxdepth para limitar profundidade:
+└─ find . -maxdepth 3 -name "*.txt" # Procura até 3 níveis
+
+Combine filtros no find:
+└─ find . -type f -name "*.txt" -size +1M  # Procura com múltiplos critérios
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+11. REFERÊNCIA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+FIND:
+────
+find [caminho] -name "arquivo"
+find [caminho] -type f
+find [caminho] -type d
+find [caminho] -size +100M
+find [caminho] -mtime -7
+find [caminho] -user username
+
+GREP:
+────
+grep "texto" arquivo.txt
+grep -i "texto" arquivo.txt
+grep -r "texto" ./
+grep -n "texto" arquivo.txt
+grep -c "texto" arquivo.txt
+grep -v "texto" arquivo.txt
+
+LOCATE:
+──────
+locate "arquivo"
+locate "*.pdf"
+updatedb
+
+WHICH:
+─────
+which programa
+which python
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+📚 LEMBRE-SE:
+─────────────
+
+✓ Use "man find", "man grep", "man locate" para mais detalhes
+✓ Teste em um diretório pequeno antes de pesquisar em todo o sistema
+✓ Use 2>/dev/null para esconder mensagens de erro
+✓ Combine comandos com pipes (|) para buscas poderosas
+
+BOA SORTE NAS SUAS PESQUISAS! 🔍
+
+═══════════════════════════════════════════════════════════════════════════════════

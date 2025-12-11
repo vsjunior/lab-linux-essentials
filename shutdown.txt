@@ -1,0 +1,715 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                  SHUTDOWN - DESLIGAR E REINICIAR LINUX                         ║
+║                                                                                ║
+║              Guia simples para gerenciar estado da máquina                      ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+1. CONCEITOS BÁSICOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O QUE CADA COMANDO FAZ:
+
+shutdown   = Desligar ou reiniciar com aviso
+reboot     = Reiniciar agora
+poweroff   = Desligar agora
+halt       = Parar (não desliga)
+systemctl  = Controlar serviços do sistema
+
+⚠️ IMPORTANTE:
+├─ Requer permissão sudo
+├─ Afeta todos os usuários
+├─ Feche programas antes
+└─ Pode perder dados não salvos
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+2. COMANDO SHUTDOWN (O MELHOR)
+═══════════════════════════════════════════════════════════════════════════════════
+
+SINTAXE BÁSICA:
+───────────────
+
+sudo shutdown [TEMPO] [AÇÃO]
+
+TEMPO pode ser:
+├─ +m        = Minutos (ex: +5 = 5 minutos)
+├─ HH:MM     = Hora específica (ex: 14:30)
+├─ now       = Imediatamente
+└─ (padrão)  = Imediatamente
+
+AÇÃO:
+├─ (padrão)  = Desligar
+├─ -r        = Reiniciar
+├─ -h        = Desligar
+└─ -c        = Cancelar
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+3. DESLIGAR A MÁQUINA
+═══════════════════════════════════════════════════════════════════════════════════
+
+DESLIGAR AGORA:
+───────────────
+
+sudo shutdown now
+
+Resultado:
+├─ Encerra todos os programas
+├─ Fecha todos os usuários
+└─ Desliga a máquina
+
+Equivalentes:
+├─ sudo poweroff
+├─ sudo halt -p
+└─ sudo systemctl poweroff
+
+
+DESLIGAR EM 5 MINUTOS:
+──────────────────────
+
+sudo shutdown +5
+
+Resultado:
+├─ Aviso enviado aos usuários
+├─ Aguarda 5 minutos
+├─ Então desliga
+
+Usuários recebem aviso:
+Broadcast message from root (Wed Dec 10 10:00:00 2025):
+The system is going DOWN for halt in 5 minutes!
+Shutdown initiated by usuario!
+
+
+DESLIGAR EM HORA ESPECÍFICA:
+────────────────────────────
+
+sudo shutdown 14:30
+
+Resultado:
+├─ Desliga às 14h30
+├─ Até lá, funciona normalmente
+├─ Aviso aparece 10 minutos antes
+
+
+DESLIGAR COM MENSAGEM PERSONALIZADA:
+──────────────────────────────────────
+
+sudo shutdown +10 "Manutenção programada - Máquina desligará em 10 minutos"
+
+Resultado:
+├─ Aviso com sua mensagem
+├─ Todos os usuários recebem
+├─ 10 minutos para salvar trabalho
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+4. REINICIAR A MÁQUINA
+═══════════════════════════════════════════════════════════════════════════════════
+
+REINICIAR AGORA:
+────────────────
+
+sudo reboot
+
+ou
+
+sudo shutdown -r now
+
+Resultado:
+├─ Encerra todos os programas
+├─ Fecha sistema operacional
+├─ Reinicia a máquina
+
+
+REINICIAR EM 5 MINUTOS:
+───────────────────────
+
+sudo shutdown -r +5
+
+Resultado:
+├─ Aviso aos usuários
+├─ Aguarda 5 minutos
+├─ Reinicia
+
+
+REINICIAR EM HORA ESPECÍFICA:
+─────────────────────────────
+
+sudo shutdown -r 22:00
+
+Resultado:
+├─ Reinicia às 22h00
+├─ Funcionando até lá
+
+
+REINICIAR COM MENSAGEM:
+────────────────────────
+
+sudo shutdown -r +15 "Sistema será reiniciado em 15 minutos para updates"
+
+Resultado:
+├─ Todos recebem notificação
+├─ Com seu texto personalizado
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+5. AVISOS AOS USUÁRIOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+QUANDO VOCÊ EXECUTA shutdown:
+
+Todos os usuários conectados recebem mensagem:
+
+┌─────────────────────────────────────────────────────┐
+│ Broadcast message from root (Wed Dec 10 10:05:00)  │
+│                                                    │
+│ The system is going down for reboot in 5 minutes!  │
+│                                                    │
+│ Shutdown initiated by usuario@computer              │
+│                                                    │
+│ Please save your work and prepare to restart.      │
+│                                                    │
+│ *** Login is blocked ***                           │
+│                                                    │
+└─────────────────────────────────────────────────────┘
+
+AVISOS AUTOMÁTICOS:
+───────────────────
+
+No terminal de cada usuário aparece:
+├─ Imediatamente quando shutdown é executado
+├─ Novamente a cada minuto
+├─ 1 minuto antes do shutdown
+├─ Ao desligar (mensagem final)
+
+
+WALL - ENVIAR AVISO MANUALMENTE:
+─────────────────────────────────
+
+wall "AVISO: Sistema será atualizado em 1 hora"
+
+Resultado:
+├─ Mensagem enviada a todos os usuários
+├─ Aparece no terminal de cada um
+├─ Sem afetar operação
+
+
+BROADCAST CUSTOMIZADO:
+──────────────────────
+
+echo "Atenção! Desligamento em 30 minutos!" | wall
+
+ou
+
+wall << 'EOF'
+Sistema será desligado para manutenção.
+Salve seu trabalho agora.
+Tempo: 30 minutos
+EOF
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+6. CANCELAR SHUTDOWN AGENDADO
+═══════════════════════════════════════════════════════════════════════════════════
+
+CANCELAR QUALQUER SHUTDOWN:
+───────────────────────────
+
+sudo shutdown -c
+
+Resultado:
+├─ Cancela o shutdown agendado
+├─ Notifica todos os usuários
+├─ Máquina continua funcionando
+
+MENSAGEM DE CANCELAMENTO:
+────────────────────────
+
+sudo shutdown -c "Shutdown cancelado - problema resolvido"
+
+AVISAR QUE FOI CANCELADO:
+─────────────────────────
+
+wall "Shutdown cancelado! Sistema continuará operacional."
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+7. COMPARAÇÃO DOS COMANDOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+DESLIGAR:
+
+sudo shutdown now              # Desliga agora com aviso
+sudo poweroff                  # Desliga agora (sem aviso)
+sudo halt -p                   # Desliga agora (sem aviso)
+sudo systemctl poweroff        # Desliga agora (systemd)
+
+
+REINICIAR:
+
+sudo reboot                    # Reinicia agora
+sudo shutdown -r now          # Reinicia agora com aviso
+sudo systemctl reboot         # Reinicia agora (systemd)
+
+
+COM TEMPO:
+
+sudo shutdown +5              # Desliga em 5 minutos
+sudo shutdown -r +10          # Reinicia em 10 minutos
+sudo shutdown 23:00           # Desliga às 23h
+sudo shutdown -r 06:00        # Reinicia às 6h
+
+
+HALT (parar, não desligar):
+
+sudo halt                      # Para a máquina (não desliga)
+sudo systemctl halt           # Para com systemd
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+8. USANDO SYSTEMCTL
+═══════════════════════════════════════════════════════════════════════════════════
+
+DESLIGAR:
+
+sudo systemctl poweroff        # Desliga agora
+sudo systemctl halt            # Para (não desliga)
+
+
+REINICIAR:
+
+sudo systemctl reboot          # Reinicia agora
+sudo systemctl isolate rescue.target    # Modo de recuperação
+
+
+SUSPENDER:
+
+sudo systemctl suspend         # Sleep (RAM ligada)
+sudo systemctl hibernate       # Hibernação (HD)
+sudo systemctl hybrid-sleep    # Suspensão híbrida
+
+
+VER STATUS:
+
+systemctl status               # Status do sistema
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+9. EXEMPLOS PRÁTICOS DO DIA A DIA
+═══════════════════════════════════════════════════════════════════════════════════
+
+CENÁRIO 1: Preciso desligar em 5 minutos
+──────────────────────────────────────────
+
+sudo shutdown +5 "Desligamento em 5 minutos. Salve seu trabalho."
+
+Resultado:
+├─ Aviso imediatamente
+├─ Usuários têm 5 minutos
+├─ Máquina desliga sozinha
+
+
+CENÁRIO 2: Reiniciar à noite (fora de horário comercial)
+────────────────────────────────────────────────────────
+
+sudo shutdown -r 22:00 "Reinicialização programada para 22h"
+
+Resultado:
+├─ Reinicia às 22h (depois do expediente)
+├─ Sistema funciona normalmente até lá
+├─ Aviso 10 minutos antes
+
+
+CENÁRIO 3: Manutenção urgente - desligar agora
+────────────────────────────────────────────────
+
+wall "CRÍTICO: Desligamento em 1 minuto por manutenção de hardware!"
+sleep 60
+sudo poweroff
+
+Resultado:
+├─ Aviso claro
+├─ 1 minuto para salvar
+├─ Desliga
+
+
+CENÁRIO 4: Desligar, mas deixou agendado por engano
+─────────────────────────────────────────────────────
+
+# Viu que desligamento foi agendado em +30
+# Quer cancelar
+
+sudo shutdown -c
+
+Resultado:
+├─ Cancela o agendamento
+├─ Máquina continua
+
+
+CENÁRIO 5: Usuários remotos - aviso com detalhes
+──────────────────────────────────────────────────
+
+wall << 'EOF'
+╔════════════════════════════════════════════════════╗
+║           AVISO IMPORTANTE - SHUTDOWN             ║
+╠════════════════════════════════════════════════════╣
+║  Tipo: Manutenção de hardware                     ║
+║  Hora: 11:00 (em 10 minutos)                     ║
+║  Duração: ~30 minutos                            ║
+║  Ação: SALVE SEU TRABALHO AGORA!                 ║
+╚════════════════════════════════════════════════════╝
+EOF
+
+sudo shutdown +10
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+10. SCRIPTS PARA SHUTDOWN AUTOMÁTICO
+═══════════════════════════════════════════════════════════════════════════════════
+
+DESLIGAR AGORA COM AVISO:
+─────────────────────────
+
+cat > desligar.sh << 'EOF'
+#!/bin/bash
+
+# Desligar com aviso e tempo
+TEMPO=${1:-5}
+MENSAGEM=${2:-"Sistema será desligado"}
+
+wall "⚠️  $MENSAGEM em $TEMPO minutos!"
+sleep 30
+wall "⚠️  $MENSAGEM em $((TEMPO-1)) minutos!"
+
+sudo shutdown +$TEMPO "$MENSAGEM"
+EOF
+
+chmod +x desligar.sh
+
+Usar:
+./desligar.sh 10 "Manutenção programada"
+
+
+REINICIAR COM AVISO:
+────────────────────
+
+cat > reiniciar.sh << 'EOF'
+#!/bin/bash
+
+TEMPO=${1:-5}
+MENSAGEM=${2:-"Sistema será reiniciado"}
+
+wall "🔄 $MENSAGEM em $TEMPO minutos!"
+sudo shutdown -r +$TEMPO "$MENSAGEM"
+EOF
+
+chmod +x reiniciar.sh
+
+Usar:
+./reiniciar.sh 15 "Updates necessários"
+
+
+SHUTDOWN AGENDADO (CRON):
+────────────────────────
+
+# Desligar todo dia às 22h
+crontab -e
+
+Adicionar:
+0 22 * * * /usr/sbin/shutdown -h +0
+
+# Reiniciar todo domingo às 3h
+0 3 * * 0 /usr/sbin/shutdown -r +0
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+11. AVISOS COM ESTILO
+═══════════════════════════════════════════════════════════════════════════════════
+
+AVISO SIMPLES:
+──────────────
+
+wall "Desligamento em 30 minutos!"
+
+
+AVISO COM DECORAÇÃO:
+────────────────────
+
+wall << 'EOF'
+╔═════════════════════════════════════╗
+║      MANUTENÇÃO DO SISTEMA         ║
+╠═════════════════════════════════════╣
+║  Início: 22:00                      ║
+║  Duração: 1 hora                    ║
+║  Status: SALVE SEU TRABALHO!        ║
+╚═════════════════════════════════════╝
+EOF
+
+
+AVISO COM CORES (se o terminal suportar):
+──────────────────────────────────────────
+
+wall << 'EOF'
+🔴 CRÍTICO: Desligamento em 5 minutos!
+⏰ Salve imediatamente!
+⚠️  Não haverá segundo aviso!
+EOF
+
+
+AVISO MULTILINHA:
+─────────────────
+
+echo "
+Atenção Usuários!
+
+O servidor será desligado em 30 minutos para:
+- Atualização de segurança
+- Limpeza de cache
+- Verificação de disco
+
+Tempo restante: 30 minutos
+Ação: Salve todos os arquivos abertos
+
+Contato: sysadmin@empresa.com
+" | wall
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+12. VERIFICAR SHUTDOWN AGENDADO
+═══════════════════════════════════════════════════════════════════════════════════
+
+VERIFICAR SE HÁ SHUTDOWN AGENDADO:
+──────────────────────────────────
+
+who -b                         # Último boot
+uptime                         # Tempo ligado
+systemctl status               # Status do sistema
+
+VER AGENDAMENTOS CRON:
+──────────────────────
+
+crontab -l                     # Seus agendamentos
+sudo crontab -l                # Agendamentos do root
+
+VER MENSAGENS DE SHUTDOWN:
+─────────────────────────
+
+journalctl -u shutdown         # Histórico de shutdowns
+tail -f /var/log/auth.log      # Log de autenticação
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+13. RECUPERAR DE SHUTDOWN AGENDADO
+═══════════════════════════════════════════════════════════════════════════════════
+
+VOCÊ EXECUTOU:
+
+sudo shutdown +30
+
+MAS QUER CANCELAR:
+
+OPÇÃO 1 - Cancelar diretamente:
+────────────────────────────────
+sudo shutdown -c
+
+OPÇÃO 2 - Ver processo shutdown:
+──────────────────────────────────
+ps aux | grep shutdown
+
+Resultado:
+root  1234  0.0  0.0  ...  /sbin/shutdown -h ...
+
+Matar o processo:
+sudo kill 1234
+
+OPÇÃO 3 - Systemctl:
+────────────────────
+systemctl list-timers          # Ver agendamentos
+systemctl cancel-shutdown       # Cancelar (alguns sistemas)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+14. DIFERENÇAS ENTRE OS COMANDOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+shutdown:
+├─ ✅ Aviso aos usuários
+├─ ✅ Tempo de espera
+├─ ✅ Graceful (encerra serviços corretamente)
+├─ ✅ Melhor para produção
+└─ Uso: sudo shutdown [tempo] [ação]
+
+reboot:
+├─ ❌ Sem aviso
+├─ ❌ Sem tempo de espera
+├─ ✅ Rápido
+├─ ⚠️ Pode perder dados
+└─ Uso: sudo reboot
+
+poweroff:
+├─ ❌ Sem aviso
+├─ ❌ Sem tempo de espera
+├─ ✅ Imediato
+├─ ⚠️ Perigoso
+└─ Uso: sudo poweroff
+
+halt:
+├─ ❌ Sem aviso
+├─ ❌ Sem tempo de espera
+├─ ⚠️ Não desliga (para o sistema)
+├─ ⚠️ Pode congelar
+└─ Uso: sudo halt
+
+systemctl:
+├─ ✅ Moderno (systemd)
+├─ ✅ Muitas opções
+├─ ❌ Sem aviso
+├─ ✅ Controle fino
+└─ Uso: sudo systemctl [comando]
+
+RECOMENDAÇÃO:
+└─ Use "shutdown" na maioria dos casos!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+15. CHECKLIST ANTES DE DESLIGAR
+═══════════════════════════════════════════════════════════════════════════════════
+
+SEMPRE FAZER ANTES:
+
+□ Salvar arquivos abertos
+  └─ Ctrl+S em cada programa
+
+□ Fechar programas
+  └─ Guarani, VSCode, navegador, etc
+
+□ Sincronizar dados
+  └─ git push, rsync, etc
+
+□ Desligar VMs/Docker
+  └─ Se houver máquinas virtuais rodando
+
+□ Fazer backup (se necessário)
+  └─ Arquivos importantes
+
+□ Avisar os usuários
+  └─ wall "Desligamento em X minutos"
+
+□ Aguardar confirmações
+  └─ Dar tempo para responderem
+
+□ Fazer shutdown com tempo
+  └─ sudo shutdown +5 (não use agora)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+16. TABELA DE REFERÊNCIA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────┬──────────────────────────────────────┐
+│ AÇÃO                                │ COMANDO                              │
+├─────────────────────────────────────┼──────────────────────────────────────┤
+│ Desligar agora                      │ sudo shutdown now                    │
+│ Desligar em 5 min                   │ sudo shutdown +5                     │
+│ Desligar às 22h                     │ sudo shutdown 22:00                  │
+│ Desligar com mensagem               │ sudo shutdown +10 "Manutenção"       │
+│                                     │                                      │
+│ Reiniciar agora                     │ sudo reboot                          │
+│ Reiniciar em 5 min                  │ sudo shutdown -r +5                  │
+│ Reiniciar às 6h                     │ sudo shutdown -r 06:00               │
+│ Reiniciar com mensagem              │ sudo shutdown -r +10 "Updates"       │
+│                                     │                                      │
+│ Suspender (sleep)                   │ sudo systemctl suspend               │
+│ Hibernar                            │ sudo systemctl hibernate             │
+│ Modo de recuperação                 │ sudo systemctl isolate rescue        │
+│                                     │                                      │
+│ Cancelar shutdown                   │ sudo shutdown -c                     │
+│ Cancelar com mensagem               │ sudo shutdown -c "Cancelado"         │
+│                                     │                                      │
+│ Avisar usuários                     │ wall "Mensagem"                      │
+│ Ver último boot                     │ who -b                               │
+│ Ver tempo ligado                    │ uptime                               │
+│ Ver histórico shutdowns             │ journalctl -u shutdown               │
+└─────────────────────────────────────┴──────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+17. PERGUNTAS FREQUENTES
+═══════════════════════════════════════════════════════════════════════════════════
+
+P: Qual comando devo usar?
+R: Use "sudo shutdown" - é o mais seguro e graceful.
+
+P: Como desligar sem aviso?
+R: sudo poweroff ou sudo halt -p (mas não recomendado)
+
+P: Como saber se há shutdown agendado?
+R: systemctl status ou ps aux | grep shutdown
+
+P: Posso cancelar um shutdown?
+R: Sim, com "sudo shutdown -c"
+
+P: Qual a diferença entre poweroff e halt?
+R: poweroff desliga. halt apenas para (pode congelar).
+
+P: Como fazer shutdown em hora específica?
+R: sudo shutdown 14:30 (hora em formato 24h)
+
+P: Posso usar cron para shutdown automático?
+R: Sim, adicione em crontab: "0 22 * * * /sbin/shutdown -h +0"
+
+P: Wall envia para todos os usuários?
+R: Sim, para todos conectados. Except nologin users.
+
+P: Como fazer timeout de shutdown maior?
+R: sudo shutdown +60 (vai esperar 60 minutos)
+
+P: Preciso de password depois de shutdown?
+R: Se usar sudo, sim. Sudo expire timeout se houver.
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+18. RESUMO FINAL
+═══════════════════════════════════════════════════════════════════════════════════
+
+COMANDOS PRINCIPAIS:
+
+sudo shutdown now              # Desligar agora (recomendado)
+sudo shutdown +5               # Desligar em 5 minutos
+sudo shutdown -r now           # Reiniciar agora
+sudo shutdown -r +10           # Reiniciar em 10 minutos
+sudo shutdown -c               # Cancelar
+wall "mensagem"                # Avisar usuários
+
+
+QUANDO USAR:
+
+Produção       → sudo shutdown +tempo "mensagem"
+Urgente        → sudo shutdown now
+Teste local    → sudo reboot
+Manutenção     → sudo shutdown -r 22:00
+
+
+SEQUÊNCIA IDEAL:
+
+1. wall "Desligamento em 30 minutos!"
+2. Esperar feedback dos usuários
+3. sudo shutdown +30 "Manutenção do servidor"
+4. Monitorar avisos
+5. Máquina desliga automaticamente
+
+
+DICA DE OURO:
+
+Sempre use "shutdown" com tempo (ex: +5, +30)
+Nunca use "now" em sistemas com usuários
+Sempre avise antes com "wall"
+Sempre cancele com -c se enganar
+
+🚀 BOA SORTE! 🚀
+
+═══════════════════════════════════════════════════════════════════════════════════

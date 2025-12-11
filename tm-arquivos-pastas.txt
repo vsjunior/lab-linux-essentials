@@ -1,0 +1,789 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║              TM ARQUIVOS PASTAS - ENCONTRAR ESPAÇO EM DISCO                     ║
+║                                                                                ║
+║     Como encontrar diretórios maiores e arquivos repetidos para liberar espaço ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+1. CONCEITOS BÁSICOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O QUE É ESPAÇO EM DISCO?
+
+Disco = HD/SSD onde ficam seus arquivos
+
+Capacidade total: 500GB, 1TB, etc
+
+Usado: Quanto está ocupado
+Livre: Quanto ainda pode usar
+
+⚠️ Quando livre < 10%, sistema fica lento!
+
+ARQUIVOS GRANDES:
+├─ Vídeos (1GB cada)
+├─ ISOs (4GB cada)
+├─ Jogos (10GB cada)
+├─ Fotos (alta resolução)
+└─ Downloads antigos
+
+PASTAS GRANDES:
+├─ ~/Videos/
+├─ ~/Downloads/
+├─ ~/.cache/
+├─ /var/log/
+├─ /usr/share/
+└─ /home/usuario/
+
+DUPLICATAS:
+├─ Mesmo arquivo em 2 lugares
+├─ Fotos duplicadas
+├─ Downloads repetidos
+├─ Backups antigos
+└─ Versões diferentes do mesmo arquivo
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+2. VER ESPAÇO TOTAL DO SISTEMA
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER TODOS OS DISCOS:
+────────────────────
+
+df -h
+
+Resultado:
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       500G  450G   50G  90%  /           ← ⚠️ CHEIO!
+/dev/sda2       100G   10G   90G  10%  /home       ← OK
+tmpfs           7.8G     0  7.8G   0%  /tmp        ← RAM
+
+ENTENDER:
+├─ Size: Capacidade total
+├─ Used: Espaço usado
+├─ Avail: Espaço disponível
+├─ Use%: Porcentagem usada
+└─ Mounted on: Onde está montado
+
+⚠️ Se Use% > 85%, precisa limpar!
+
+
+VER SÓ O DISCO PRINCIPAL:
+──────────────────────────
+
+df -h /
+
+Resultado:
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       500G  450G   50G  90%  /
+
+✅ Fácil de ver se está cheio
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+3. ENCONTRAR DIRETÓRIOS MAIORES
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER TAMANHO DE TODAS AS PASTAS DO HOME:
+────────────────────────────────────────
+
+du -sh ~/* | sort -rh | head -10
+
+Resultado:
+5.2G    /home/usuario/Videos
+3.1G    /home/usuario/Downloads
+2.4G    /home/usuario/.cache
+1.8G    /home/usuario/Documentos
+1.2G    /home/usuario/Imagens
+890M    /home/usuario/Música
+650M    /home/usuario/.mozilla
+450M    /home/usuario/.config
+320M    /home/usuario/Desktop
+200M    /home/usuario/.local
+
+⚠️ Videos e Downloads são os maiores!
+
+
+VER SUBPASTAS DENTRO DE UMA PASTA:
+───────────────────────────────────
+
+du -sh ~/Downloads/* | sort -rh | head -5
+
+Resultado:
+2.8G    /home/usuario/Downloads/iso-ubuntu-22.04.iso
+1.2G    /home/usuario/Downloads/filme.mp4
+890M    /home/usuario/Downloads/jogo.zip
+650M    /home/usuario/Downloads/fotos-viagem.zip
+450M    /home/usuario/Downloads/software.deb
+
+⚠️ ISO do Ubuntu está ocupando 2.8GB!
+
+
+VER TODO O SISTEMA (ROOT):
+───────────────────────────
+
+sudo du -sh /* | sort -rh | head -10
+
+Resultado:
+45G     /usr
+23G     /var
+15G     /home
+8.5G    /opt
+5.2G    /lib
+3.1G    /boot
+2.4G    /etc
+1.8G    /root
+1.2G    /sbin
+890M    /bin
+
+⚠️ /usr e /var são os maiores no sistema!
+
+
+VER COM MAIS DETALHES:
+───────────────────────
+
+du -h --max-depth=1 / | sort -rh | head -10
+
+Resultado:
+45G     /usr
+23G     /var
+15G     /home
+8.5G    /opt
+5.2G    /lib
+3.1G    /boot
+2.4G    /etc
+1.8G    /root
+1.2G    /sbin
+890M    /bin
+
+✅ Mesmo resultado, mas com -h (human readable)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+4. ENCONTRAR ARQUIVOS MAIORES
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER OS 10 ARQUIVOS MAIORES NO HOME:
+────────────────────────────────────
+
+find ~ -type f -exec du -h {} + | sort -rh | head -10
+
+Resultado:
+5.2G    /home/usuario/Videos/filme.mp4
+3.1G    /home/usuario/Downloads/iso-ubuntu.iso
+2.4G    /home/usuario/Imagens/fotos-viagem.raw
+1.8G    /home/usuario/Documentos/backup.zip
+1.2G    /home/usuario/Música/album.mp3
+890M    /home/usuario/Downloads/jogo.iso
+650M    /home/usuario/Videos/serie.mkv
+450M    /home/usuario/Downloads/software.deb
+320M    /home/usuario/Imagens/foto-grande.jpg
+200M    /home/usuario/Documentos/presentacao.pptx
+
+⚠️ Filme.mp4 está ocupando 5.2GB sozinho!
+
+
+VER ARQUIVOS MAIORES QUE 1GB:
+──────────────────────────────
+
+find ~ -type f -size +1G -exec du -h {} + | sort -rh
+
+Resultado:
+5.2G    /home/usuario/Videos/filme.mp4
+3.1G    /home/usuario/Downloads/iso-ubuntu.iso
+2.4G    /home/usuario/Imagens/fotos-viagem.raw
+1.8G    /home/usuario/Documentos/backup.zip
+
+✅ Só mostra arquivos > 1GB
+
+
+VER ARQUIVOS MAIORES QUE 100MB:
+────────────────────────────────
+
+find ~ -type f -size +100M -exec du -h {} + | sort -rh | head -10
+
+Resultado:
+5.2G    /home/usuario/Videos/filme.mp4
+3.1G    /home/usuario/Downloads/iso-ubuntu.iso
+2.4G    /home/usuario/Imagens/fotos-viagem.raw
+1.8G    /home/usuario/Documentos/backup.zip
+890M    /home/usuario/Downloads/jogo.iso
+650M    /home/usuario/Videos/serie.mkv
+450M    /home/usuario/Downloads/software.deb
+320M    /home/usuario/Imagens/foto-grande.jpg
+200M    /home/usuario/Documentos/presentacao.pptx
+150M    /home/usuario/Videos/video.mp4
+
+⚠️ Muitos arquivos grandes!
+
+
+VER NO SISTEMA TODO (ROOT):
+───────────────────────────
+
+sudo find / -type f -size +1G -exec du -h {} + 2>/dev/null | sort -rh | head -5
+
+Resultado:
+45G     /usr/share/doc/ubuntu-manual.pdf
+23G     /var/lib/docker/containers/container-data
+15G     /home/usuario/Videos/collection.mp4
+8.5G    /opt/software/large-file.dat
+5.2G    /var/log/system.log
+
+⚠️ Docker containers podem ser muito grandes!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+5. ENCONTRAR ARQUIVOS REPETIDOS (DUPLICATAS)
+═══════════════════════════════════════════════════════════════════════════════════
+
+INSTALAR FERRAMENTA PARA DUPLICATAS:
+────────────────────────────────────
+
+sudo apt install fdupes -y
+
+Resultado:
+├─ fdupes: Encontra arquivos duplicados
+├─ Compara conteúdo (não só nome)
+└─ Seguro de usar
+
+
+ENCONTRAR DUPLICATAS NO HOME:
+─────────────────────────────
+
+fdupes -r ~
+
+Resultado:
+5 duplicate files (in 2 sets) found.
+
+/home/usuario/Imagens/foto1.jpg
+/home/usuario/Imagens/backup/foto1.jpg
+
+/home/usuario/Documentos/contrato.pdf
+/home/usuario/Documentos/backup/contrato.pdf
+/home/usuario/Downloads/contrato.pdf
+
+⚠️ 5 arquivos duplicados encontrados!
+
+
+VER TAMANHO TOTAL DE DUPLICATAS:
+─────────────────────────────────
+
+fdupes -r ~ | grep -E "^/home" | xargs du -ch | tail -1
+
+Resultado:
+5.2G    total
+
+⚠️ 5.2GB em duplicatas!
+
+
+DELETAR DUPLICATAS AUTOMATICAMENTE:
+────────────────────────────────────
+
+fdupes -r -d ~
+
+Resultado:
+[1] /home/usuario/Imagens/foto1.jpg
+[2] /home/usuario/Imagens/backup/foto1.jpg
+
+Set 1 of 2, preserve files [1 - 2, all]:
+
+Mantém [1] e deleta [2]? Digite: 1
+(all para manter primeiro de cada set)
+
+✅ Deleta duplicatas, mantendo uma cópia
+
+
+VER DUPLICATAS POR TAMANHO:
+────────────────────────────
+
+fdupes -r -S ~
+
+Resultado:
+5 duplicate files (in 2 sets) found.
+
+Set 1 (2 files, 2.1G each):
+/home/usuario/Videos/filme.mp4
+/home/usuario/Videos/backup/filme.mp4
+
+Set 2 (3 files, 890M each):
+/home/usuario/Downloads/iso.iso
+/home/usuario/Downloads/backup/iso.iso
+/home/usuario/backup/iso.iso
+
+⚠️ Filme duplicado = 2.1GB desperdiçados!
+
+
+OUTRAS FERRAMENTAS PARA DUPLICATAS:
+────────────────────────────────────
+
+duff (mais rápido):
+sudo apt install duff -y
+duff -r ~
+
+rdfind (mais avançado):
+sudo apt install rdfind -y
+rdfind -dryrun true ~
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+6. ENCONTRAR ARQUIVOS ANTIGOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ARQUIVOS MAIS DE 1 ANO:
+────────────────────────────
+
+find ~ -type f -mtime +365 -exec ls -lh {} + | head -10
+
+Resultado:
+-rw-r--r-- 1 usuario usuario 2.1G Dec 10  2023 /home/usuario/Videos/filme-antigo.mp4
+-rw-r--r-- 1 usuario usuario 890M Jun 15  2023 /home/usuario/Downloads/iso-antigo.iso
+-rw-r--r-- 1 usuario usuario 450M Mar 20  2023 /home/usuario/Documentos/backup-antigo.zip
+-rw-r--r-- 1 usuario usuario 320M Jan 05  2023 /home/usuario/Imagens/fotos-antigas.zip
+-rw-r--r-- 1 usuario usuario 200M Nov 12  2022 /home/usuario/Música/album-antigo.mp3
+
+⚠️ Arquivos de 2022/2023 que podem ser deletados!
+
+
+VER ARQUIVOS MAIS DE 6 MESES:
+──────────────────────────────
+
+find ~ -type f -mtime +180 -exec ls -lh {} + | head -10
+
+Resultado:
+├─ Mesmo formato
+├─ Mais arquivos (mais recentes)
+└─ Mais opções de deletar
+
+
+VER ARQUIVOS MAIS DE 30 DIAS:
+──────────────────────────────
+
+find ~ -type f -mtime +30 -exec ls -lh {} + | head -10
+
+Resultado:
+├─ Arquivos recentes
+├─ Downloads antigos
+├─ Cache temporário
+└─ Logs pessoais
+
+
+DELETAR ARQUIVOS ANTIGOS AUTOMATICAMENTE:
+──────────────────────────────────────────
+
+⚠️ CUIDADO! Teste primeiro!
+
+find ~ -type f -mtime +365 -name "*.tmp" -delete          # Só .tmp antigos
+find ~ -type f -mtime +180 -name "*.log" -delete          # Só .log antigos
+find ~ -type f -mtime +90 -name "*.bak" -delete           # Só .bak antigos
+
+✅ Seguro para arquivos específicos
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+7. ENCONTRAR ARQUIVOS POR TIPO
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER TODOS OS VÍDEOS:
+─────────────────────
+
+find ~ -type f \( -name "*.mp4" -o -name "*.mkv" -o -name "*.avi" \) -exec du -h {} + | sort -rh | head -5
+
+Resultado:
+5.2G    /home/usuario/Videos/filme.mp4
+2.1G    /home/usuario/Videos/serie.mkv
+1.8G    /home/usuario/Downloads/video.avi
+890M    /home/usuario/Videos/clip.mp4
+650M    /home/usuario/Imagens/video-foto.mp4
+
+⚠️ Vídeos ocupam muito espaço!
+
+
+VER TODAS AS IMAGENS:
+──────────────────────
+
+find ~ -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.gif" -o -name "*.raw" \) -exec du -h {} + | sort -rh | head -5
+
+Resultado:
+2.4G    /home/usuario/Imagens/foto.raw
+1.2G    /home/usuario/Imagens/album.jpg
+890M    /home/usuario/Downloads/imagem.png
+650M    /home/usuario/Imagens/foto-grande.jpg
+450M    /home/usuario/Screenshots/screenshot.png
+
+⚠️ Fotos RAW são enormes!
+
+
+VER TODOS OS ISOS:
+───────────────────
+
+find ~ -type f -name "*.iso" -exec du -h {} + | sort -rh
+
+Resultado:
+3.1G    /home/usuario/Downloads/ubuntu.iso
+2.1G    /home/usuario/Downloads/windows.iso
+1.8G    /home/usuario/Downloads/fedora.iso
+890M    /home/usuario/Downloads/debian.iso
+
+⚠️ ISOs de instalação ocupam GBs!
+
+
+VER TODOS OS ARQUIVOS DE LOG:
+──────────────────────────────
+
+find ~ -type f -name "*.log" -exec du -h {} + | sort -rh | head -5
+
+Resultado:
+450M    /home/usuario/.config/app.log
+320M    /home/usuario/Documents/debug.log
+200M    /home/usuario/Downloads/error.log
+150M    /home/usuario/.cache/logfile.log
+100M    /home/usuario/Música/lyrics.log
+
+⚠️ Logs podem crescer muito!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+8. LIBERAR ESPAÇO - AÇÕES PRÁTICAS
+═══════════════════════════════════════════════════════════════════════════════════
+
+LIMPAR DOWNLOADS:
+──────────────────
+
+ls -lh ~/Downloads/
+
+Resultado:
+total 3.1G
+-rw-r--r-- 1 usuario usuario 3.1G Dec 10 14:30 ubuntu.iso
+
+rm ~/Downloads/ubuntu.iso
+
+✅ Liberou 3.1GB!
+
+
+LIMPAR VÍDEOS ANTIGOS:
+───────────────────────
+
+ls -lh ~/Videos/
+
+Resultado:
+-rw-r--r-- 1 usuario usuario 5.2G Dec 10  2023 filme-antigo.mp4
+
+rm ~/Videos/filme-antigo.mp4
+
+✅ Liberou 5.2GB!
+
+
+LIMPAR CACHE:
+──────────────
+
+du -sh ~/.cache/
+
+Resultado:
+2.4G    /home/usuario/.cache/
+
+rm -rf ~/.cache/*                    # ⚠️ Pode quebrar programas!
+
+ou mais seguro:
+rm -rf ~/.cache/google-chrome/*      # Só Chrome
+rm -rf ~/.cache/thumbnails/*         # Só miniaturas
+
+✅ Liberou espaço!
+
+
+LIMPAR LIXEIRA:
+────────────────
+
+du -sh ~/.local/share/Trash/
+
+Resultado:
+1.2G    /home/usuario/.local/share/Trash/
+
+rm -rf ~/.local/share/Trash/*
+
+✅ Liberou 1.2GB!
+
+
+COMPRIMIR ARQUIVOS GRANDES:
+────────────────────────────
+
+tar -czf backup-comprimido.tar.gz ~/Documentos/grandes/
+
+Resultado:
+├─ Reduz tamanho em ~70%
+├─ Mantém arquivos
+├─ Fácil de recuperar
+
+rm -rf ~/Documentos/grandes/         # Deleta originais depois
+
+
+MOVER PARA HD EXTERNO:
+───────────────────────
+
+mv ~/Videos/grandes/ /media/HD-externo/
+
+Resultado:
+├─ Mantém arquivos
+├─ Libera espaço local
+├─ Acesso quando precisar
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+9. SCRIPTS AUTOMÁTICOS PARA LIMPEZA
+═══════════════════════════════════════════════════════════════════════════════════
+
+SCRIPT: RELATÓRIO DE ESPAÇO:
+────────────────────────────
+
+cat > ~/relatorio-espaco.sh << 'EOF'
+#!/bin/bash
+
+echo "=== RELATÓRIO DE ESPAÇO EM DISCO ==="
+echo ""
+
+echo "DISCO PRINCIPAL:"
+df -h /
+echo ""
+
+echo "TOP 10 PASTAS MAIORES:"
+du -sh ~/* 2>/dev/null | sort -rh | head -10
+echo ""
+
+echo "TOP 10 ARQUIVOS MAIORES:"
+find ~ -type f -exec du -h {} + 2>/dev/null | sort -rh | head -10
+echo ""
+
+echo "ARQUIVOS > 1GB:"
+find ~ -type f -size +1G -exec du -h {} + 2>/dev/null | sort -rh
+echo ""
+
+echo "DUPLICATAS (se fdupes instalado):"
+fdupes -r ~ 2>/dev/null | wc -l | xargs echo " arquivos duplicados encontrados"
+echo ""
+
+echo "ARQUIVOS ANTIGOS (> 1 ano):"
+find ~ -type f -mtime +365 2>/dev/null | wc -l | xargs echo " arquivos antigos encontrados"
+
+EOF
+
+chmod +x ~/relatorio-espaco.sh
+
+Usar:
+./relatorio-espaco.sh
+
+
+SCRIPT: LIMPEZA AUTOMÁTICA:
+────────────────────────────
+
+cat > ~/limpeza-automatica.sh << 'EOF'
+#!/bin/bash
+
+echo "=== LIMPEZA AUTOMÁTICA DE ESPAÇO ==="
+
+# Confirmação
+read -p "Isso vai deletar arquivos antigos. Continuar? (s/n): " confirm
+if [ "$confirm" != "s" ]; then exit 1; fi
+
+echo "Limpando Downloads antigos (> 30 dias)..."
+find ~/Downloads -type f -mtime +30 -delete 2>/dev/null
+
+echo "Limpando arquivos temporários..."
+rm -rf /tmp/* 2>/dev/null
+rm -rf ~/.cache/thumbnails/* 2>/dev/null
+
+echo "Limpando lixeira..."
+rm -rf ~/.local/share/Trash/* 2>/dev/null
+
+echo "Limpando logs pessoais (> 90 dias)..."
+find ~ -name "*.log" -mtime +90 -delete 2>/dev/null
+
+echo "✅ LIMPEZA CONCLUÍDA!"
+df -h /
+
+EOF
+
+chmod +x ~/limpeza-automatica.sh
+
+Usar:
+./limpeza-automatica.sh
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+10. TABELA DE REFERÊNCIA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────┬──────────────────────────────────────┐
+│ AÇÃO                                 │ COMANDO                              │
+├──────────────────────────────────────┼──────────────────────────────────────┤
+│ Ver espaço total                     │ df -h                                │
+│ Ver espaço home                      │ df -h ~                              │
+│                                      │                                      │
+│ Top pastas home                      │ du -sh ~/* | sort -rh | head -10     │
+│ Top pastas sistema                   │ sudo du -sh /* | sort -rh | head -10 │
+│                                      │                                      │
+│ Top arquivos home                    │ find ~ -type f -exec du -h {} + | sort -rh | head -10 │
+│ Arquivos > 1GB                       │ find ~ -type f -size +1G -exec du -h {} + │
+│ Arquivos > 100MB                     │ find ~ -type f -size +100M -exec du -h {} + │
+│                                      │                                      │
+│ Instalar fdupes                      │ sudo apt install fdupes -y           │
+│ Encontrar duplicatas                 │ fdupes -r ~                          │
+│ Deletar duplicatas                   │ fdupes -r -d ~                       │
+│                                      │                                      │
+│ Arquivos > 1 ano                     │ find ~ -type f -mtime +365           │
+│ Arquivos > 6 meses                   │ find ~ -type f -mtime +180           │
+│ Arquivos > 30 dias                   │ find ~ -type f -mtime +30            │
+│                                      │                                      │
+│ Vídeos                               │ find ~ -name "*.mp4" -o -name "*.mkv" | xargs du -h │
+│ Imagens                              │ find ~ -name "*.jpg" -o -name "*.png" | xargs du -h │
+│ ISOs                                 │ find ~ -name "*.iso" | xargs du -h   │
+│                                      │                                      │
+│ Limpar Downloads                     │ rm ~/Downloads/*                     │
+│ Limpar cache                         │ rm -rf ~/.cache/*                   │
+│ Limpar lixeira                       │ rm -rf ~/.local/share/Trash/*        │
+│                                      │                                      │
+│ Comprimir pasta                      │ tar -czf arquivo.tar.gz pasta/       │
+│ Mover para externo                   │ mv pasta/ /media/HD/                 │
+└──────────────────────────────────────┴──────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+11. PLANO DE AÇÃO PARA LIBERAR ESPAÇO
+═══════════════════════════════════════════════════════════════════════════════════
+
+PASSO 1: DIAGNOSTICAR
+──────────────────────
+
+df -h /                                    # Ver se está cheio
+du -sh ~/* | sort -rh | head -10          # Top pastas
+find ~ -type f -size +1G | xargs du -h    # Arquivos grandes
+
+PASSO 2: IDENTIFICAR O QUE DELETAR
+───────────────────────────────────
+
+✅ Downloads antigos
+✅ Vídeos assistidos
+✅ ISOs de instalação
+✅ Backups antigos
+✅ Cache de programas
+✅ Arquivos temporários
+
+❌ Documentos importantes
+❌ Fotos pessoais
+❌ Configurações
+❌ Programas instalados
+
+PASSO 3: FAZER BACKUP ANTES
+───────────────────────────
+
+tar -czf backup-importante.tar.gz ~/Documentos/ ~/Imagens/
+
+Resultado:
+├─ Backup seguro
+├─ Pode recuperar se errar
+└─ Comprimido
+
+PASSO 4: DELETAR COM CAUTELA
+─────────────────────────────
+
+rm ~/Downloads/ubuntu.iso                 # ISO antigo
+rm ~/Videos/filme-assistido.mp4           # Vídeo visto
+rm -rf ~/.cache/google-chrome/*           # Cache navegador
+
+PASSO 5: VERIFICAR RESULTADO
+─────────────────────────────
+
+df -h /                                   # Deve ter mais espaço livre
+du -sh ~/* | sort -rh | head -5           # Ver se melhorou
+
+PASSO 6: PREVENIR FUTURO
+─────────────────────────
+
+./limpeza-automatica.sh                   # Script semanal
+crontab -e                                # Agendar limpeza
+# Adicionar: 0 3 * * 1 ~/limpeza-automatica.sh
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+12. PERGUNTAS FREQUENTES
+═══════════════════════════════════════════════════════════════════════════════════
+
+P: Como saber se meu disco está cheio?
+R: df -h / → Se Use% > 85%, precisa limpar
+
+P: Onde ficam os arquivos maiores?
+R: ~/Videos/, ~/Downloads/, ~/.cache/
+
+P: Como encontrar duplicatas?
+R: sudo apt install fdupes -y; fdupes -r ~
+
+P: É seguro deletar ~/.cache/?
+R: Geralmente sim, programas recriam. Mas teste primeiro
+
+P: Como comprimir arquivos grandes?
+R: tar -czf arquivo.tar.gz pasta-grande/
+
+P: Como mover para HD externo?
+R: mv ~/Videos/ /media/HD-externo/
+
+P: Como automatizar limpeza?
+R: Criar script e adicionar no crontab
+
+P: find está demorando muito?
+R: Use -maxdepth 2 para limitar profundidade
+
+P: Como ver progresso do find?
+R: find ~ -type f -print0 | xargs -0 du -h | sort -rh
+
+P: Errei e deletei arquivo importante?
+R: testdisk ou extundelete podem recuperar (difícil)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+13. RESUMO FINAL - FLUXO RÁPIDO
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ESPAÇO:
+───────────
+
+df -h /                          # Disco cheio?
+du -sh ~/* | sort -rh | head -10  # Onde está?
+
+ENCONTRAR GRANDES:
+───────────────────
+
+find ~ -type f -size +1G | xargs du -h | sort -rh  # Arquivos > 1GB
+fdupes -r ~                         # Duplicatas
+
+LIMPAR:
+────────
+
+rm ~/Downloads/*                   # Downloads
+rm -rf ~/.cache/*                  # Cache
+rm -rf ~/.local/share/Trash/*      # Lixeira
+
+VERIFICAR:
+──────────
+
+df -h /                           # Melhorou?
+
+AUTOMATIZAR:
+─────────────
+
+crontab -e                        # Semanal
+0 3 * * 1 ~/limpeza-automatica.sh
+
+
+DICAS DE OURO:
+
+1. Sempre verifique ANTES de deletar
+2. Faça backup de arquivos importantes
+3. Comece pelos Downloads e Cache
+4. Use compressão para arquivos que quer manter
+5. Agende limpeza semanal automática
+6. Monitore espaço regularmente
+7. Evite acumular ISOs e vídeos antigos
+
+ESPACO LIBERADO = ✅ MÁQUINA FELIZ!
+
+═══════════════════════════════════════════════════════════════════════════════════

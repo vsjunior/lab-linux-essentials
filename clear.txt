@@ -1,0 +1,485 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                 LIMPEZA DO LINUX - GUIA SIMPLES                                ║
+║                                                                                ║
+║            Como limpar cache, temporários e liberar espaço em disco             ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+1. POR QUE LIMPAR O LINUX?
+═══════════════════════════════════════════════════════════════════════════════════
+
+Com o tempo, o Linux acumula:
+
+📦 **Arquivos temporários** → Não são mais usados
+💾 **Cache** → Cópias de coisas já baixadas
+📥 **Downloads** → Arquivos instaladores não usados
+🎨 **Cache do navegador** → Histórico, cookies, imagens
+⚙️ **Pacotes do sistema** → Versões antigas de programas
+
+RESULTADO:
+──────────
+❌ Disco fica cheio
+❌ Sistema fica lento
+❌ Espaço desperdiçado
+
+SOLUÇÃO:
+────────
+✅ Limpar regularmente (1-2 vezes por mês)
+✅ Usar comandos simples
+✅ Liberar espaço em disco
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+2. VER QUANTO ESPAÇO ESTÁ SENDO USADO
+═══════════════════════════════════════════════════════════════════════════════════
+
+Antes de limpar, veja quanto espaço tem:
+
+COMANDO SIMPLES:
+────────────────
+df -h                                   # Mostra espaço em disco
+
+Resultado mostra:
+├─ Filesystem   → Nome do disco
+├─ Size         → Tamanho total
+├─ Used         → Espaço usado
+├─ Avail        → Espaço disponível
+└─ Use%         → Percentual usado
+
+EXEMPLO DE SAÍDA:
+──────────────────
+Filesystem      Size  Used Avail Use%
+/dev/sda1       100G   75G   25G  75%
+         ↑       ↑     ↑     ↑    ↑
+      Disco   Total Usado Livre Percentual
+
+
+COMANDO MAIS DETALHADO:
+───────────────────────
+du -sh *                                # Mostra tamanho de cada pasta
+du -sh ~ /*                             # Pasta do usuário + raiz
+
+Resultado mostra:
+20G  Documents/
+15G  Downloads/
+10G  Videos/
+5G   Pictures/
+...
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+3. LIMPEZA DE ARQUIVOS TEMPORÁRIOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+Arquivos temporários são seguros para deletar.
+
+PASTA /tmp (Temporários do sistema):
+─────────────────────────────────────
+
+Ver o que tem lá:
+ls -la /tmp                             # Lista arquivos
+
+Limpar (remover arquivos antigos):
+sudo rm -rf /tmp/*                      # Remove TUDO em /tmp
+sudo rm -rf /tmp/.*                     # Remove arquivos ocultos também
+
+⚠️ CUIDADO: Alguns programas usam /tmp enquanto rodam!
+   Melhor fazer isso quando está reiniciando.
+
+PASTA ~/.cache (Cache do usuário):
+──────────────────────────────────
+
+Ver tamanho:
+du -sh ~/.cache                         # Mostra quanto ocupa
+
+Limpar:
+rm -rf ~/.cache/*                       # Remove cache do usuário
+
+✅ SEGURO! Pode deletar sem problema.
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+4. LIMPEZA DO CACHE DO GOOGLE CHROME
+═══════════════════════════════════════════════════════════════════════════════════
+
+O Chrome guarda MUITAS coisas em cache.
+
+ONDE FICA O CACHE DO CHROME:
+─────────────────────────────
+
+Para Linux (Chromium/Chrome):
+~/.config/google-chrome/Default/Cache/
+~/.config/chromium/Default/Cache/
+
+MÉTODO 1: DELETAR DENTRO DO CHROME (RECOMENDADO)
+──────────────────────────────────────────────────
+
+1. Abra o Chrome
+2. Menu (≡) → Mais ferramentas → Limpar dados de navegação
+3. Selecione "Todos os tempos"
+4. Marque:
+   - [x] Cookies e outros dados de site
+   - [x] Imagens e arquivos armazenados em cache
+5. Clique em "Limpar dados"
+
+✅ Mais seguro e fácil!
+
+MÉTODO 2: TERMINAL (Chrome fechado)
+────────────────────────────────────
+
+Ver tamanho do cache:
+du -sh ~/.config/google-chrome/Default/Cache/
+
+Limpar completamente:
+rm -rf ~/.config/google-chrome/Default/Cache/*
+
+⚠️ Chrome deve estar FECHADO!
+
+MÉTODO 3: LINHA DE COMANDO (RÁPIDO)
+────────────────────────────────────
+
+Para Chrome:
+rm -rf ~/.config/google-chrome/Default/{Cache,Code\ Cache,HTTP\ Cache}
+
+Para Chromium:
+rm -rf ~/.config/chromium/Default/{Cache,Code\ Cache}
+
+LIMPAR HISTÓRICO:
+──────────────────
+
+Terminal:
+rm -rf ~/.config/google-chrome/Default/History
+
+⚠️ Isso APAGA o histórico de navegação!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+5. LIMPEZA DE PACOTES DO SISTEMA (Ubuntu/Debian)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Quando você instala/desinstala programas, fica sujeira.
+
+LIMPEZA AUTOMÁTICA:
+────────────────────
+
+Remover pacotes não usados:
+sudo apt autoremove                     # Remove dependências não usadas
+sudo apt clean                          # Remove arquivos de pacotes baixados
+sudo apt autoclean                      # Remove pacotes parcialmente baixados
+
+COMBINADO (Mais limpeza):
+─────────────────────────
+
+sudo apt autoremove && sudo apt clean && sudo apt autoclean
+
+RESULTADO:
+──────────
+✅ Pacotes velhos removidos
+✅ Cache de instalação limpo
+✅ Dependências não usadas apagadas
+
+QUANTO DE ESPAÇO LIBERA:
+────────────────────────
+
+Pode liberar: 500MB - 5GB (depende da quantidade de atualizações)
+
+
+LIMPEZA DE RED HAT/FEDORA:
+───────────────────────────
+
+sudo dnf clean all                      # Limpa cache do dnf
+sudo dnf autoremove                     # Remove pacotes não usados
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+6. LIMPEZA DE PACOTES PIP (Python)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Se você usa Python, pip também deixa cache.
+
+VER CACHE DO PIP:
+──────────────────
+pip cache info                          # Mostra tamanho e localização
+
+LIMPAR CACHE DO PIP:
+─────────────────────
+pip cache purge                         # Remove TODO o cache
+
+OU manual:
+rm -rf ~/.cache/pip                     # Remove pasta de cache
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+7. LIMPEZA DE CACHE DO NPM (Node.js)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Se você usa Node.js:
+
+VER TAMANHO DO CACHE:
+──────────────────────
+npm cache verify                        # Verifica cache
+
+LIMPAR CACHE DO NPM:
+─────────────────────
+npm cache clean --force                 # Remove TODO o cache NPM
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+8. LIMPEZA DE ARQUIVOS ANTIGOS E DUPLICADOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+DELETAR ARQUIVOS ANTIGOS:
+──────────────────────────
+
+Encontrar arquivos antigos (mais de 30 dias):
+find ~/Downloads -type f -mtime +30     # Mostra arquivos antigos
+
+Deletar arquivos antigos:
+find ~/Downloads -type f -mtime +30 -delete  # Deleta arquivos com >30 dias
+
+⚠️ CUIDADO: Teste primeiro SEM -delete!
+
+ENCONTRAR ARQUIVOS GRANDES:
+─────────────────────────────
+
+Ver 10 maiores arquivos:
+du -sh /* | sort -rh | head -10
+
+Ver maiores arquivos em uma pasta:
+find . -type f -exec ls -lh {} \; | sort -k5 -rh | head -20
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+9. SCRIPT DE LIMPEZA COMPLETA
+═══════════════════════════════════════════════════════════════════════════════════
+
+Você pode criar um script para limpar tudo de uma vez:
+
+CRIAR ARQUIVO cleanup.sh:
+──────────────────────────
+
+cat > ~/cleanup.sh << 'EOF'
+#!/bin/bash
+
+echo "🧹 Iniciando limpeza do sistema..."
+
+# Limpeza do cache do usuário
+echo "📁 Limpando cache do usuário..."
+rm -rf ~/.cache/*
+
+# Limpeza do Chrome
+echo "🌐 Limpando cache do Chrome..."
+rm -rf ~/.config/google-chrome/Default/Cache/*
+rm -rf ~/.config/chromium/Default/Cache/*
+
+# Limpeza de temporários
+echo "🗑️  Limpando arquivos temporários..."
+sudo rm -rf /tmp/*
+
+# Limpeza do sistema (requer senha)
+echo "🔧 Limpando pacotes do sistema..."
+sudo apt autoremove -y
+sudo apt clean
+sudo apt autoclean
+
+# Limpeza do pip
+echo "🐍 Limpando cache do pip..."
+pip cache purge
+
+echo "✅ Limpeza concluída!"
+echo ""
+df -h
+
+EOF
+
+EXECUTAR SCRIPT:
+─────────────────
+chmod +x ~/cleanup.sh                   # Torna executável
+~/cleanup.sh                            # Executa o script
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+10. LIMPEZA POR PASTA - GUIA RÁPIDO
+═══════════════════════════════════════════════════════════════════════════════════
+
+📍 PASTA              │ COMANDO PARA LIMPAR              │ SEGURO?
+─────────────────────┼──────────────────────────────────┼─────────
+~/.cache             │ rm -rf ~/.cache/*                │ ✅ SIM
+~/.local/share/Trash │ rm -rf ~/.local/share/Trash/*    │ ✅ SIM
+~/Downloads          │ rm -rf ~/Downloads/*             │ ⚠️ CUIDADO
+~/.config/chrome     │ rm -rf ~/.config/google-chrome   │ ✅ SIM
+/tmp                 │ sudo rm -rf /tmp/*               │ ✅ SIM
+~/.bashrc history    │ cat /dev/null > ~/.bash_history  │ ✅ SIM
+~/.thumbnails       │ rm -rf ~/.thumbnails/*           │ ✅ SIM
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+11. MONITORAR ESPAÇO EM TEMPO REAL
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ESPAÇO CONSTANTEMENTE:
+────────────────────────────
+
+watch -n 5 'df -h'                      # Atualiza a cada 5 segundos
+
+VER PASTA MAIOR:
+─────────────────
+du -sh ~/* | sort -rh                   # Ordena por tamanho
+
+VER EM TEMPO REAL O QUE OCUPA:
+────────────────────────────────
+ncdu                                    # Ferramenta interativa
+(Instalar: sudo apt install ncdu)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+12. AGENDA DE LIMPEZA RECOMENDADA
+═══════════════════════════════════════════════════════════════════════════════════
+
+⏰ FREQUÊNCIA RECOMENDADA:
+
+SEMANAL:
+────────
+✓ Limpar cache do navegador
+✓ Limpar ~/Downloads
+✓ Limpar lixeira
+
+MENSAL:
+────────
+✓ apt autoremove (Ubuntu/Debian)
+✓ Limpar ~/.cache
+✓ Verificar espaço em disco
+
+TRIMESTRAL (3 meses):
+──────────────────────
+✓ Verificar arquivos duplicados
+✓ Remover arquivos antigos
+✓ Otimizar disco (desfragmentar em SSD? Não precisa!)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+13. REFERÊNCIA RÁPIDA DE COMANDOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ESPAÇO:
+───────────
+df -h                                   # Espaço em disco
+du -sh ~/                               # Pasta do usuário
+ncdu                                    # Interativo
+
+LIMPAR CACHE:
+──────────────
+rm -rf ~/.cache/*                       # Cache do usuário
+rm -rf ~/.config/google-chrome/Default/Cache/*  # Chrome
+
+LIMPAR TEMP:
+─────────────
+sudo rm -rf /tmp/*                      # Temporários do sistema
+rm -rf ~/Downloads/*                    # Downloads
+
+LIMPAR SISTEMA:
+────────────────
+sudo apt autoremove                     # Remove pacotes não usados
+sudo apt clean                          # Remove cache de instalação
+sudo apt autoclean                      # Remove parcialmente baixados
+
+LIMPAR PYTHON:
+────────────────
+pip cache purge                         # Limpa cache do pip
+
+LIMPAR NODE:
+─────────────
+npm cache clean --force                 # Limpa cache do npm
+
+HISTÓRICO:
+───────────
+cat /dev/null > ~/.bash_history         # Limpa histórico de comandos
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+14. DICAS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════════
+
+⚠️ CUIDADOS:
+
+❌ NÃO DELETE:
+   ├─ /root (super usuário)
+   ├─ /etc (configurações)
+   ├─ /usr (programas)
+   ├─ /var/log (logs importantes)
+   └─ /opt (aplicativos)
+
+✅ DELETE COM CUIDADO:
+   ├─ ~/Downloads (pode ter arquivo importante)
+   ├─ /tmp (quando sistema está rodando)
+   └─ Arquivos do navegador (apaga histórico)
+
+✅ SEMPRE SEGURO:
+   ├─ ~/.cache/*
+   ├─ Lixeira
+   ├─ Cache do Chrome
+   └─ apt autoremove
+
+
+💡 DICAS:
+
+1. Use `du -sh` antes de deletar para ver quanto vai limpar
+2. Teste comando sem `-delete` antes de usar com `-delete`
+3. Faça backups de arquivos importantes antes de limpar
+4. Use `sudo` com cuidado - pode deletar coisas importantes
+5. Verifique espaço em disco antes e depois com `df -h`
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+15. TROUBLESHOOTING - DISCO CHEIO?
+═══════════════════════════════════════════════════════════════════════════════════
+
+PASSO 1: Ver quanto espaço tem
+────────────────────────────────
+df -h                                   # Vê uso de disco
+
+PASSO 2: Encontrar o que está ocupando
+─────────────────────────────────────────
+du -sh ~/* | sort -rh                   # Pasta do usuário
+du -sh /* 2>/dev/null | sort -rh        # Todo o sistema
+
+PASSO 3: Limpar conforme o culpado
+─────────────────────────────────────
+Se ~/Downloads é grande:
+  └─ rm -rf ~/Downloads/antigos
+
+Se ~/.cache é grande:
+  └─ rm -rf ~/.cache/*
+
+Se /var é grande:
+  └─ sudo journalctl --vacuum=100M      # Limpa logs
+
+Se /home é grande:
+  └─ Procure arquivos duplicados com: fdupes -r ~/
+
+PASSO 4: Verificar novamente
+──────────────────────────────
+df -h                                   # Deve ter mais espaço
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+📚 RESUMO FINAL:
+
+Limpe regularmente para:
+✅ Melhorar performance
+✅ Liberar espaço em disco
+✅ Sistema mais rápido
+✅ Menos problemas
+
+Comandos mais usados:
+• sudo apt autoremove     (Ubuntu/Debian)
+• rm -rf ~/.cache/*       (Cache do usuário)
+• df -h                   (Ver espaço)
+
+Use man [comando] para mais informações!
+
+═══════════════════════════════════════════════════════════════════════════════════
