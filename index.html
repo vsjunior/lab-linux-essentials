@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Essentials - Documentação Técnica</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        header { background-color: #333; color: white; padding: 10px; text-align: center; }
+        nav { margin: 20px 0; }
+        button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; margin: 5px; }
+        button:hover { background-color: #45a049; }
+        section { background-color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        footer { text-align: center; margin-top: 20px; color: #666; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Linux Essentials - Guia Completo de Estudos</h1>
+    </header>
+    <nav>
+        <button onclick="window.location.href='fundamentals.html'">Fundamentos</button>
+        <button onclick="window.location.href='administration.html'">Administração</button>
+        <button onclick="window.location.href='optimization.html'">Otimização</button>
+        <button onclick="window.location.href='study-plan.html'">Plano de Estudos</button>
+        <button onclick="window.location.href='projects.html'">Projetos Práticos</button>
+        <button onclick="window.location.href='resources.html'">Recursos</button>
+    </nav>
+    <section id="overview">
+        <h2>📋 Visão Geral</h2>
+        <p>Este repositório contém uma coleção abrangente de materiais para estudo e prática de <strong>Linux Essentials</strong>, focado em usuários que desejam dominar os fundamentos do sistema operacional Linux de forma prática e aplicada.</p>
+        <h3>🎯 Objetivo</h3>
+        <p>Fornecer uma base sólida para:</p>
+        <ul>
+            <li>Compreensão da estrutura de arquivos Linux (FHS)</li>
+            <li>Domínio de comandos essenciais do terminal</li>
+            <li>Capacidade de manutenção e otimização do sistema</li>
+            <li>Desenvolvimento de habilidades práticas para administração Linux</li>
+        </ul>
+    </section>
+    <section id="structure">
+        <h2>📁 Estrutura do Repositório</h2>
+        <pre>
+lab-linux-essentials/
+├── README.md                    # Documentação principal (este arquivo)
+├── linux-essentials.txt         # Estrutura de diretórios FHS
+├── linux-comandos.txt           # Comandos básicos e avançados
+├── guia_500_comandos_Linux.pdf  # Referência completa em PDF
+├── find.txt                     # Busca e localização de arquivos
+├── clear.txt                    # Limpeza e manutenção do sistema
+├── killer-process.txt           # Gerenciamento de processos
+├── shutdown.txt                 # Controle de energia e estado
+├── maquina-aviao.txt            # Otimização para performance
+├── tm-arquivos-pastas.txt       # Análise de espaço em disco
+└── .git/                        # Controle de versão
+        </pre>
+    </section>
+    <section id="materials">
+        <h2>📚 Materiais de Estudo Detalhados</h2>
+        <h3>📖 Fundamentos do Linux</h3>
+        <table>
+            <tr><th>Arquivo</th><th>Conteúdo</th><th>Nível</th><th>Tempo Estimado</th></tr>
+            <tr><td>linux-essentials.txt</td><td>Estrutura completa FHS, explicação de cada diretório, hierarquia de arquivos</td><td>Iniciante</td><td>2-3 horas</td></tr>
+            <tr><td>linux-comandos.txt</td><td>50+ comandos essenciais, sintaxe, exemplos práticos, flags importantes</td><td>Iniciante</td><td>4-5 horas</td></tr>
+            <tr><td>guia_500_comandos_Linux.pdf</td><td>Referência completa de 500 comandos, organizada por categoria</td><td>Intermediário</td><td>10+ horas</td></tr>
+        </table>
+        <h3>🔧 Administração e Manutenção</h3>
+        <table>
+            <tr><th>Arquivo</th><th>Conteúdo</th><th>Nível</th><th>Tempo Estimado</th></tr>
+            <tr><td>find.txt</td><td>Comandos find, grep, locate, which; busca avançada, pipes, performance</td><td>Intermediário</td><td>3-4 horas</td></tr>
+            <tr><td>clear.txt</td><td>Limpeza de cache, pacotes, logs; manutenção preventiva, scripts automáticos</td><td>Intermediário</td><td>2-3 horas</td></tr>
+            <tr><td>killer-process.txt</td><td>Identificação de processos pesados, sinais kill, monitoramento em tempo real</td><td>Avançado</td><td>3-4 horas</td></tr>
+            <tr><td>shutdown.txt</td><td>Controle de energia, agendamento, avisos aos usuários, scripts de automação</td><td>Intermediário</td><td>2-3 horas</td></tr>
+        </table>
+        <h3>⚡ Otimização e Performance</h3>
+        <table>
+            <tr><th>Arquivo</th><th>Conteúdo</th><th>Nível</th><th>Tempo Estimado</th></tr>
+            <tr><td>maquina-aviao.txt</td><td>Otimização completa do sistema, limpeza profunda, configuração para internet rápida</td><td>Avançado</td><td>4-5 horas</td></tr>
+            <tr><td>tm-arquivos-pastas.txt</td><td>Análise de espaço em disco, localização de arquivos grandes, gerenciamento de duplicatas</td><td>Intermediário</td><td>2-3 horas</td></tr>
+        </table>
+        <h3>📝 Documentação e Ferramentas</h3>
+        <table>
+            <tr><th>Arquivo</th><th>Conteúdo</th><th>Nível</th><th>Tempo Estimado</th></tr>
+            <tr><td>markdown-guia.md</td><td>Guia completo de Markdown: sintaxe, visualização HTML, ferramentas, dicas profissionais</td><td>Iniciante</td><td>2-3 horas</td></tr>
+        </table>
+    </section>
+    <footer>
+        <p>&copy; 2025 vsjunior - Linux Essentials</p>
+    </footer>
+</body>
+</html>

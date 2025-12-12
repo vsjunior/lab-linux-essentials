@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos do Linux - Documentação Técnica</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        header { background-color: #333; color: white; padding: 10px; text-align: center; }
+        nav { margin: 20px 0; }
+        button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; margin: 5px; }
+        button:hover { background-color: #45a049; }
+        section { background-color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #333; }
+        pre { background-color: #f9f9f9; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        ul { list-style-type: disc; margin-left: 20px; }
+        footer { text-align: center; margin-top: 20px; color: #666; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📖 Fundamentos do Linux</h1>
+    </header>
+    <nav>
+        <button onclick="window.location.href='index.html'">Voltar ao Início</button>
+        <button onclick="window.location.href='administration.html'">Administração</button>
+        <button onclick="window.location.href='optimization.html'">Otimização</button>
+        <button onclick="window.location.href='study-plan.html'">Plano de Estudos</button>
+    </nav>
+    <section id="fhs">
+        <h2>Estrutura FHS (Filesystem Hierarchy Standard)</h2>
+        <p>O Linux segue um padrão internacional para organização de arquivos:</p>
+        <pre>
+/bin      → Binários essenciais (ls, cp, mv)
+/sbin     → Binários do sistema (ifconfig, fdisk)
+/boot     → Arquivos de boot (kernel, initrd)
+/dev      → Dispositivos (sda, tty, null)
+/etc      → Configurações (passwd, fstab)
+/home     → Diretórios dos usuários
+/lib      → Bibliotecas compartilhadas
+/media    → Pontos de montagem (CD, USB)
+/mnt      → Montagem temporária
+/opt      → Software opcional
+/proc     → Sistema de arquivos virtual
+/root     → Diretório do root
+/srv      → Dados de serviços
+/sys      → Sistema de arquivos virtual
+/tmp      → Arquivos temporários
+/usr      → Hierarquia secundária
+/var      → Dados variáveis (logs, spool)
+        </pre>
+    </section>
+    <section id="commands">
+        <h2>Comandos Essenciais por Categoria</h2>
+        <h3>Navegação e Exploração</h3>
+        <ul>
+            <li><code>pwd</code> - Mostrar diretório atual</li>
+            <li><code>ls</code> - Listar arquivos</li>
+            <li><code>cd</code> - Mudar diretório</li>
+            <li><code>tree</code> - Visualizar estrutura em árvore</li>
+        </ul>
+        <h3>Manipulação de Arquivos</h3>
+        <ul>
+            <li><code>cp</code> - Copiar arquivos</li>
+            <li><code>mv</code> - Mover/renomear</li>
+            <li><code>rm</code> - Remover arquivos</li>
+            <li><code>mkdir</code> - Criar diretórios</li>
+            <li><code>touch</code> - Criar arquivos vazios</li>
+        </ul>
+        <h3>Busca e Filtros</h3>
+        <ul>
+            <li><code>find</code> - Busca avançada</li>
+            <li><code>grep</code> - Busca em texto</li>
+            <li><code>locate</code> - Busca rápida por nome</li>
+            <li><code>which</code> - Localizar executáveis</li>
+        </ul>
+        <h3>Sistema e Processos</h3>
+        <ul>
+            <li><code>ps</code> - Listar processos</li>
+            <li><code>top</code> - Monitor em tempo real</li>
+            <li><code>kill</code> - Matar processos</li>
+            <li><code>df</code> - Espaço em disco</li>
+            <li><code>free</code> - Memória RAM</li>
+        </ul>
+        <h3>Rede e Conectividade</h3>
+        <ul>
+            <li><code>ping</code> - Testar conectividade</li>
+            <li><code>curl</code> - Transferência de dados</li>
+            <li><code>wget</code> - Download de arquivos</li>
+            <li><code>ssh</code> - Conexão remota segura</li>
+        </ul>
+    </section>
+    <section id="practice">
+        <h2>Ambiente de Prática Recomendado</h2>
+        <ul>
+            <li><strong>Virtual Machine</strong>: VirtualBox ou VMware com Ubuntu</li>
+            <li><strong>WSL</strong>: Windows Subsystem for Linux</li>
+            <li><strong>Live USB</strong>: Boot direto de pendrive</li>
+            <li><strong>Container</strong>: Docker com imagem Ubuntu</li>
+        </ul>
+        <h3>Ferramentas Necessárias</h3>
+        <pre>
+# Instalar ferramentas essenciais
+sudo apt update
+sudo apt install -y htop ncdu tree fdupes speedtest-cli
+
+# Para desenvolvimento
+sudo apt install -y git vim nano curl wget
+        </pre>
+    </section>
+    <section id="linux-commands">
+        <h2>Guia Completo de Comandos Linux</h2>
+        <p>Baseado no Guia de 500 Comandos Linux. Inclui dicas para começar, navegação, manipulação de arquivos, permissões, informações do sistema, processos, busca, compressão, rede, usuários, instalação de pacotes, desligamento e muito mais.</p>
+        <p><a href="guia_500_comandos_Linux.pdf" target="_blank">📄 Baixar Guia Completo em PDF</a></p>
+    </section>
+    <section id="manipulacao">
+        <h2>Comandos de Manipulação de Diretórios e Arquivos</h2>
+        <p>No dia de hoje veremos os principais comandos de manipulação de diretórios e comandos de manipulação de arquivos.</p>
+        <pre>
+No dia de hoje veremos os principais comandos de manipulação de diretórios e comandos de manipulação de arquivos.
+
+Comandos de manipulação de diretórios:
+
+mkdir - cria diretórios
+mkdir -p - cria diretórios recursivamente
+rmdir - remove diretórios vazios
+rm -rf - remove diretórios e arquivos recursivamente
+
+Comandos de manipulação de arquivos:
+
+touch - cria arquivos vazios
+cp - copia arquivos
+mv - move ou renomeia arquivos
+rm - remove arquivos
+cat - visualiza conteúdo de arquivos
+less - visualiza conteúdo de arquivos paginado
+head - mostra as primeiras linhas
+tail - mostra as últimas linhas
+        </pre>
+    </section>
+    <footer>
+        <p>&copy; 2025 vsjunior - Linux Essentials</p>
+    </footer>
+</body>
+</html>

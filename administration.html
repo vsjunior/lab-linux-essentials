@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração e Manutenção - Documentação Técnica</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        header { background-color: #333; color: white; padding: 10px; text-align: center; }
+        nav { margin: 20px 0; }
+        button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; margin: 5px; }
+        button:hover { background-color: #45a049; }
+        section { background-color: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        footer { text-align: center; margin-top: 20px; color: #666; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔧 Administração e Manutenção</h1>
+    </header>
+    <nav>
+        <button onclick="window.location.href='index.html'">Voltar ao Início</button>
+        <button onclick="window.location.href='fundamentals.html'">Fundamentos</button>
+        <button onclick="window.location.href='optimization.html'">Otimização</button>
+        <button onclick="window.location.href='study-plan.html'">Plano de Estudos</button>
+    </nav>
+    <section id="materials">
+        <h2>Materiais de Estudo</h2>
+        <table>
+            <tr><th>Arquivo</th><th>Conteúdo</th><th>Nível</th><th>Tempo Estimado</th></tr>
+            <tr><td>find.txt</td><td>Comandos find, grep, locate, which; busca avançada, pipes, performance</td><td>Intermediário</td><td>3-4 horas</td></tr>
+            <tr><td>clear.txt</td><td>Limpeza de cache, pacotes, logs; manutenção preventiva, scripts automáticos</td><td>Intermediário</td><td>2-3 horas</td></tr>
+            <tr><td>killer-process.txt</td><td>Identificação de processos pesados, sinais kill, monitoramento em tempo real</td><td>Avançado</td><td>3-4 horas</td></tr>
+            <tr><td>shutdown.txt</td><td>Controle de energia, agendamento, avisos aos usuários, scripts de automação</td><td>Intermediário</td><td>2-3 horas</td></tr>
+        </table>
+    </section>
+    <section id="checklist">
+        <h2>Checklist de Habilidades</h2>
+        <h3>Administração (Semana 2)</h3>
+        <ul>
+            <li>Busca avançada (<code>find</code>, <code>grep</code>, <code>locate</code>)</li>
+            <li>Gerenciamento de processos (<code>ps</code>, <code>top</code>, <code>kill</code>)</li>
+            <li>Controle de energia (<code>shutdown</code>, <code>reboot</code>)</li>
+            <li>Limpeza e manutenção (<code>apt clean</code>, <code>journalctl</code>)</li>
+            <li>Permissões de arquivos (<code>chmod</code>, <code>chown</code>)</li>
+        </ul>
+    </section>
+    <section id="find-guide">
+        <h2>Guia de Busca e Localização (find.txt)</h2>
+        <p>Guia completo sobre comandos de busca no Linux: find, grep, locate, which, pipes e performance.</p>
+        <details>
+            <summary>Clique para expandir o conteúdo completo</summary>
+            <pre>
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║              PESQUISA NO TERMINAL LINUX - GUIA SIMPLES                         ║
+║                                                                                ║
+║                    Como procurar por arquivos e conteúdo                       ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+1. COMANDOS PRINCIPAIS DE PESQUISA
+═══════════════════════════════════════════════════════════════════════════════════
+
+Existem 4 comandos principais para procurar no Linux:
+
+┌─────────────┬──────────────────────┬────────────────────────────────────────┐
+│  Comando    │  O que faz           │  Exemplo de uso                        │
+├─────────────┼──────────────────────┼────────────────────────────────────────┤
+│ find        │ Procura por arquivos │ find /home -name "arquivo.txt"         │
+│ grep        │ Procura por texto    │ grep "palavra" arquivo.txt             │
+│ locate      │ Procura rápida       │ locate "arquivo.txt"                   │
+│ which       │ Procura programa     │ which python                           │
+└─────────────┴──────────────────────┴────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+2. FIND - PROCURAR POR ARQUIVOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando FIND é o mais completo para procurar arquivos.
+
+ESTRUTURA BÁSICA:
+─────────────────
+find [local] [opção] [valor]
+
+Exemplos:
+
+🔍 PROCURAR POR NOME:
+──────────────────────
+find . -name "arquivo.txt"              # Procura no diretório atual
+find /home -name "*.txt"                # Procura todos os .txt em /home
+find / -name "documento"                # Procura em todo o sistema
+
+🔍 PROCURAR POR TIPO:
+──────────────────────
+find . -type f                          # Procura apenas arquivos (f = file)
+find . -type d                          # Procura apenas pastas (d = directory)
+find . -type l                          # Procura links simbólicos (l = link)
+
+🔍 PROCURAR POR TAMANHO:
+─────────────────────────
+find . -size +100M                      # Arquivos maiores que 100MB
+find . -size -10M                       # Arquivos menores que 10MB
+find . -size 5M                         # Arquivos com exatamente 5MB
+
+🔍 PROCURAR POR DATA:
+──────────────────────
+find . -mtime -7                        # Modificados nos últimos 7 dias
+find . -mtime +30                       # Modificados há mais de 30 dias
+find . -atime -1                        # Acessados no último dia
+
+🔍 PROCURAR POR PROPRIETÁRIO:
+────────────────────────────────
+find . -user username                   # Arquivos do usuário "username"
+find . -group groupname                 # Arquivos do grupo "groupname"
+
+🔍 COMBINANDO CRITÉRIOS:
+──────────────────────────
+find . -name "*.pdf" -type f            # Arquivos PDF
+find . -name "*.jpg" -type f -size +1M  # Imagens JPG maiores que 1MB
+find . -type f -mtime -7 -name "*.txt"  # Arquivos .txt modificados há menos de 7 dias
+
+
+─────────────────────────────────────────────────────────────────────────────────
+EXEMPLO PRÁTICO COM FIND:
+─────────────────────────
+
+# Procurar arquivo chamado "config.txt"
+find /home -name "config.txt"
+
+# Procurar todos os arquivos de imagem
+find . -name "*.jpg" -o -name "*.png"
+
+# Procurar pastas vazias
+find . -type d -empty
+
+# Procurar arquivos que NÃO terminam em .txt
+find . -not -name "*.txt"
+
+# Encontrar e listar arquivos grandes
+find . -type f -size +100M -exec ls -lh {} \;
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+3. GREP - PROCURAR DENTRO DE ARQUIVOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando GREP procura por texto DENTRO dos arquivos.
+
+ESTRUTURA BÁSICA:
+─────────────────
+grep [opção] "texto" arquivo
+
+Exemplos:
+
+🔍 PROCURAR TEXTO SIMPLES:
+───────────────────────────
+grep "erro" arquivo.txt                 # Procura a palavra "erro"
+grep "Python" script.py                 # Procura "Python" no arquivo
+
+🔍 PROCURAR COM CONTEXTO:
+──────────────────────────
+grep -n "error" arquivo.txt             # Mostra número da linha (-n)
+grep -i "ERROR" arquivo.txt             # Ignora maiúsculas/minúsculas (-i)
+grep -c "erro" arquivo.txt              # Conta quantas vezes aparece (-c)
+
+🔍 PROCURAR EM MÚLTIPLOS ARQUIVOS:
+────────────────────────────────────
+grep "password" *.txt                   # Procura em todos os .txt
+grep "localhost" /etc/hosts             # Procura em arquivo específico
+
+🔍 PROCURAR RECURSIVAMENTE:
+─────────────────────────────
+grep -r "função" ./                     # Procura em todas as pastas
+grep -r "main" /home/user/              # Procura recursivamente em /home/user
+
+🔍 MOSTRANDO LINHAS ANTES E DEPOIS:
+───────────────────────────────────────
+grep -A 3 "erro" arquivo.txt            # Mostra 3 linhas depois (-A)
+grep -B 2 "erro" arquivo.txt            # Mostra 2 linhas antes (-B)
+grep -C 2 "erro" arquivo.txt            # Mostra 2 linhas antes E depois (-C)
+
+🔍 NEGANDO A BUSCA:
+────────────────────
+grep -v "comentário" arquivo.txt        # Mostra linhas SEM "comentário"
+grep -v "^#" arquivo.txt                # Remove linhas que começam com #
+
+
+─────────────────────────────────────────────────────────────────────────────────
+EXEMPLO PRÁTICO COM GREP:
+──────────────────────────
+
+# Procurar todas as linhas com "localhost" em um arquivo
+grep "localhost" /etc/hosts
+
+# Procurar "erro" ignorando maiúsculas
+grep -i "erro" log.txt
+
+# Procurar "import" em todos os arquivos Python
+grep -r "import" *.py
+
+# Contar quantas vezes "function" aparece
+grep -c "function" codigo.js
+
+# Ver linhas com "warning" e as 2 linhas seguintes
+grep -A 2 "warning" sistema.log
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+4. LOCATE - PROCURA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando LOCATE é mais rápido que find, mas menos flexible.
+
+⚠️  IMPORTANTE: Precisa atualizar a base de dados primeiro!
+────────────────────────────────────────────────────────────
+
+sudo updatedb                           # Atualiza base de dados (fazer periodicamente)
+
+USANDO LOCATE:
+──────────────
+locate "arquivo.txt"                    # Procura "arquivo.txt"
+locate "*.pdf"                          # Procura arquivos PDF
+locate -i "PALAVRA"                     # Ignora maiúsculas (-i)
+locate -c "arquivo"                     # Conta resultados (-c)
+
+VANTAGENS:
+──────────
+✓ Muito rápido
+✓ Procura em todo o sistema
+✓ Simples de usar
+
+DESVANTAGENS:
+─────────────
+✗ Não encontra arquivos novos (até updatedb)
+✗ Menos opções de filtro que find
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+5. WHICH - PROCURAR PROGRAMAS
+═══════════════════════════════════════════════════════════════════════════════════
+
+O comando WHICH encontra onde um programa está instalado.
+
+ESTRUTURA:
+──────────
+which [nome_programa]
+
+Exemplos:
+
+which python                            # Mostra onde está o Python
+which ls                                # Mostra onde está o comando ls
+which node                              # Mostra onde está o Node.js
+which java                              # Mostra onde está o Java
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+6. COMBINANDO COMANDOS (PIPES)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Você pode combinar comandos usando | (pipe) para pesquisas mais poderosas.
+
+ESTRUTURA:
+──────────
+comando1 | comando2
+
+Exemplos:
+
+🔗 FIND + GREP:
+────────────────
+find . -type f -name "*.txt" | grep "importante"
+# Procura arquivos .txt que contenham "importante" no nome
+
+🔗 GREP + WC:
+──────────────
+grep "erro" log.txt | wc -l
+# Conta quantas linhas contêm "erro"
+
+🔗 FIND + GREP:
+────────────────
+find . -type f -name "*.log" | xargs grep "error"
+# Procura "error" em todos os arquivos .log
+
+🔗 LS + GREP:
+──────────────
+ls -la | grep "2025"
+# Lista arquivos modificados em 2025
+
+🔗 CAT + GREP:
+────────────────
+cat arquivo.txt | grep "palavra" | wc -l
+# Conta quantas vezes "palavra" aparece
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+7. ATALHOS E DICAS PRÁTICAS
+═══════════════════════════════════════════════════════════════════════════════════
+
+DICAS IMPORTANTES:
+──────────────────
+
+💡 Use aspas para procurar frases inteiras:
+   grep "mensagem de erro" arquivo.txt
+
+💡 Use . para procurar no diretório atual:
+   find . -name "*.pdf"
+
+💡 Use / para procurar em todo o sistema (cuidado!):
+   find / -name "arquivo"
+
+💡 Use ~ para procurar na pasta do usuário:
+   find ~ -name "documento.txt"
+
+💡 Use -exec para executar comando nos resultados:
+   find . -name "*.tmp" -exec rm {} \;
+   # Remove todos os arquivos .tmp
+
+💡 Use 2>/dev/null para esconder erros de permissão:
+   find / -name "arquivo" 2>/dev/null
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+8. COMPARAÇÃO RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+┌───────────┬─────────────────────────┬────────────────┬──────────────────┐
+│ Comando   │ Procura por             │ Velocidade     │ Melhor para      │
+├───────────┼─────────────────────────┼────────────────┼──────────────────┤
+│ find      │ Arquivos/pastas         │ Média/Lenta    │ Buscas complexas │
+│ grep      │ Texto dentro de arquivo │ Média          │ Conteúdo         │
+│ locate    │ Nome de arquivo         │ Rápida         │ Busca rápida     │
+│ which     │ Programas executáveis   │ Rápida         │ Localizar apps   │
+└───────────┴─────────────────────────┴────────────────┴──────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+9. EXEMPLOS DO DIA A DIA
+═══════════════════════════════════════════════════════════════════════════════════
+
+📋 CENÁRIO 1: "Perdi um arquivo, não lembro o nome"
+────────────────────────────────────────────────────
+find /home -type f -mtime -7                # Arquivos modificados há 7 dias
+find /home -type f -size +10M               # Procurar arquivos grandes
+
+📋 CENÁRIO 2: "Preciso encontrar uma função no código"
+─────────────────────────────────────────────────────────
+grep -r "function_name" ./src               # Procura recursivamente em src
+grep -rn "main" *.py                        # Mostra linha onde aparece
+
+📋 CENÁRIO 3: "Quero listar todos os arquivos .jpg"
+──────────────────────────────────────────────────────
+find . -name "*.jpg"                        # Procura todos os .jpg
+find . -name "*.jpg" -o -name "*.png"       # Procura jpg OU png
+
+📋 CENÁRIO 4: "Arquivo foi deletado, quero recuperar"
+────────────────────────────────────────────────────────
+locate "arquivo_que_era"                    # Se ainda estiver no índice
+find /home -name "*arquivo*"                # Procura parcial do nome
+
+📋 CENÁRIO 5: "Verificar quem criou este arquivo"
+──────────────────────────────────────────────────
+ls -la arquivo.txt                          # Ver proprietário
+find . -user username -name "*.txt"         # Arquivos de um usuário
+
+📋 CENÁRIO 6: "Procurar erro em logs"
+──────────────────────────────────────────
+grep -i "error" /var/log/syslog             # Procura erros
+grep -i "error" /var/log/syslog | wc -l     # Conta quantos erros
+tail -f /var/log/syslog | grep "error"      # Monitora em tempo real
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+10. DICAS DE PERFORMANCE
+═══════════════════════════════════════════════════════════════════════════════════
+
+⚡ FAZER MAIS RÁPIDO:
+──────────────────────
+
+Use locate em vez de find (se possível):
+└─ locate arquivo                    # Rápido (1-2 segundos)
+└─ find / -name arquivo              # Lento (10-30 segundos)
+
+Restrinja o escopo da busca:
+└─ find /home -name "*.txt"         # Mais rápido
+└─ find / -name "*.txt"             # Mais lento (busca todo sistema)
+
+Use -maxdepth para limitar profundidade:
+└─ find . -maxdepth 3 -name "*.txt" # Procura até 3 níveis
+
+Combine filtros no find:
+└─ find . -type f -name "*.txt" -size +1M  # Procura com múltiplos critérios
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+11. REFERÊNCIA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════════
+
+FIND:
+────
+find [caminho] -name "arquivo"
+find [caminho] -type f
+find [caminho] -type d
+find [caminho] -size +100M
+find [caminho] -mtime -7
+find [caminho] -user username
+
+GREP:
+────
+grep "texto" arquivo.txt
+grep -i "texto" arquivo.txt
+grep -r "texto" ./
+grep -n "texto" arquivo.txt
+grep -c "texto" arquivo.txt
+grep -v "texto" arquivo.txt
+
+LOCATE:
+──────
+locate "arquivo"
+locate "*.pdf"
+updatedb
+
+WHICH:
+─────
+which programa
+which python
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+📚 LEMBRE-SE:
+─────────────
+
+✓ Use "man find", "man grep", "man locate" para mais detalhes
+✓ Teste em um diretório pequeno antes de pesquisar em todo o sistema
+✓ Use 2>/dev/null para esconder mensagens de erro
+✓ Combine comandos com pipes (|) para buscas poderosas
+
+BOA SORTE NAS SUAS PESQUISAS! 🔍
+
+═══════════════════════════════════════════════════════════════════════════════════
+            </pre>
+        </details>
+    </section>
+    <section id="clear-guide">
+        <h2>Guia de Limpeza e Manutenção (clear.txt)</h2>
+        <p>Limpeza de cache, pacotes, logs; manutenção preventiva e scripts automáticos.</p>
+        <details>
+            <summary>Clique para expandir o conteúdo completo</summary>
+            <pre>
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                 LIMPEZA DO LINUX - GUIA SIMPLES                                ║
+║                                                                                ║
+║            Como limpar cache, temporários e liberar espaço em disco             ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+1. POR QUE LIMPAR O LINUX?
+═══════════════════════════════════════════════════════════════════════════════════
+
+Com o tempo, o Linux acumula:
+
+📦 **Arquivos temporários** → Não são mais usados
+💾 **Cache** → Cópias de coisas já baixadas
+📥 **Downloads** → Arquivos instaladores não usados
+🎨 **Cache do navegador** → Histórico, cookies, imagens
+⚙️ **Pacotes do sistema** → Versões antigas de programas
+
+RESULTADO:
+──────────
+❌ Disco fica cheio
+❌ Sistema fica lento
+❌ Espaço desperdiçado
+
+SOLUÇÃO:
+────────
+✅ Limpar regularmente (1-2 vezes por mês)
+✅ Usar comandos simples
+✅ Liberar espaço em disco
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+2. VER QUANTO ESPAÇO ESTÁ SENDO USADO
+═══════════════════════════════════════════════════════════════════════════════════
+
+Antes de limpar, veja quanto espaço tem:
+
+COMANDO SIMPLES:
+────────────────
+df -h                                   # Mostra espaço em disco
+
+Resultado mostra:
+├─ Filesystem   → Nome do disco
+├─ Size         → Tamanho total
+├─ Used         → Espaço usado
+├─ Avail        → Espaço disponível
+└─ Use%         → Percentual usado
+
+EXEMPLO DE SAÍDA:
+──────────────────
+Filesystem      Size  Used Avail Use%
+/dev/sda1       100G   75G   25G  75%
+         ↑       ↑     ↑     ↑    ↑
+      Disco   Total Usado Livre Percentual
+
+
+COMANDO MAIS DETALHADO:
+───────────────────────
+du -sh *                                # Mostra tamanho de cada pasta
+du -sh ~ /*                             # Pasta do usuário + raiz
+
+Resultado mostra:
+20G  Documents/
+15G  Downloads/
+10G  Videos/
+5G   Pictures/
+...
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+3. LIMPEZA DE ARQUIVOS TEMPORÁRIOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+Arquivos temporários são seguros para deletar.
+
+PASTA /tmp (Temporários do sistema):
+─────────────────────────────────────
+
+Ver o que tem lá:
+ls -la /tmp                             # Lista arquivos
+
+Limpar (remover arquivos antigos):
+sudo rm -rf /tmp/*                      # Remove TUDO em /tmp
+sudo rm -rf /tmp/.*                     # Remove arquivos ocultos também
+
+⚠️ CUIDADO: Alguns programas usam /tmp enquanto rodam!
+   Melhor fazer isso quando está reiniciando.
+
+PASTA ~/.cache (Cache do usuário):
+──────────────────────────────────
+
+Ver tamanho:
+du -sh ~/.cache                         # Mostra quanto ocupa
+
+Limpar:
+rm -rf ~/.cache/*                       # Remove cache do usuário
+
+✅ SEGURO! Pode deletar sem problema.
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+4. LIMPEZA DO CACHE DO GOOGLE CHROME
+═══════════════════════════════════════════════════════════════════════════════════
+
+O Chrome guarda MUITAS coisas em cache.
+
+ONDE FICA O CACHE DO CHROME:
+─────────────────────────────
+
+Para Linux (Chromium/Chrome):
+~/.config/google-chrome/Default/Cache/
+~/.config/chromium/Default/Cache/
+
+MÉTODO 1: DELETAR DENTRO DO CHROME (RECOMENDADO)
+──────────────────────────────────────────────────
+
+1. Abra o Chrome
+2. Menu (≡) → Mais ferramentas → Limpar dados de navegação
+3. Selecione "Todos os tempos"
+4. Marque:
+   - [x] Cookies e outros dados de site
+   - [x] Imagens e arquivos armazenados em cache
+5. Clique em "Limpar dados"
+
+✅ Mais seguro e fácil!
+
+MÉTODO 2: TERMINAL (Chrome fechado)
+────────────────────────────────────
+
+Ver tamanho do cache:
+du -sh ~/.config/google-chrome/Default/Cache/
+
+Limpar completamente:
+rm -rf ~/.config/google-chrome/Default/Cache/*
+
+⚠️ Chrome deve estar FECHADO!
+
+MÉTODO 3: LINHA DE COMANDO (RÁPIDO)
+────────────────────────────────────
+
+Para Chrome:
+rm -rf ~/.config/google-chrome/Default/{Cache,Code\ Cache,HTTP\ Cache}
+
+Para Chromium:
+rm -rf ~/.config/chromium/Default/{Cache,Code\ Cache}
+
+LIMPAR HISTÓRICO:
+──────────────────
+
+Terminal:
+rm -rf ~/.config/google-chrome/Default/History
+
+⚠️ Isso APAGA o histórico de navegação!
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+5. LIMPEZA DE PACOTES DO SISTEMA (Ubuntu/Debian)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Quando você instala/desinstala programas, fica sujeira.
+
+LIMPEZA AUTOMÁTICA:
+────────────────────
+
+Remover pacotes não usados:
+sudo apt autoremove                     # Remove dependências não usadas
+sudo apt clean                          # Remove arquivos de pacotes baixados
+sudo apt autoclean                      # Remove pacotes parcialmente baixados
+
+COMBINADO (Mais limpeza):
+─────────────────────────
+
+sudo apt autoremove && sudo apt clean && sudo apt autoclean
+
+RESULTADO:
+──────────
+✅ Pacotes velhos removidos
+✅ Cache de instalação limpo
+✅ Dependências não usadas apagadas
+
+QUANTO DE ESPAÇO LIBERA:
+────────────────────────
+
+Pode liberar: 500MB - 5GB (depende da quantidade de atualizações)
+
+
+LIMPEZA DE RED HAT/FEDORA:
+───────────────────────────
+
+sudo dnf clean all                      # Limpa cache do dnf
+sudo dnf autoremove                     # Remove pacotes não usados
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+6. LIMPEZA DE PACOTES PIP (Python)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Se você usa Python, pip também deixa cache.
+
+VER CACHE DO PIP:
+──────────────────
+pip cache info                          # Mostra tamanho e localização
+
+LIMPAR CACHE DO PIP:
+─────────────────────
+pip cache purge                         # Remove TODO o cache
+
+OU manual:
+rm -rf ~/.cache/pip                     # Remove pasta de cache
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+7. LIMPEZA DE CACHE DO NPM (Node.js)
+═══════════════════════════════════════════════════════════════════════════════════
+
+Se você usa Node.js:
+
+VER TAMANHO DO CACHE:
+──────────────────────
+npm cache verify                        # Verifica cache
+
+LIMPAR CACHE DO NPM:
+─────────────────────
+npm cache clean --force                 # Remove TODO o cache NPM
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+8. LIMPEZA DE ARQUIVOS ANTIGOS E DUPLICADOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+DELETAR ARQUIVOS ANTIGOS:
+──────────────────────────
+
+Encontrar arquivos antigos (mais de 30 dias):
+find ~/Downloads -type f -mtime +30     # Mostra arquivos antigos
+
+Deletar arquivos antigos:
+find ~/Downloads -type f -mtime +30 -delete  # Deleta arquivos com >30 dias
+
+⚠️ CUIDADO: Teste primeiro SEM -delete!
+
+ENCONTRAR ARQUIVOS GRANDES:
+─────────────────────────────
+
+Ver 10 maiores arquivos:
+du -sh /* | sort -rh | head -10
+
+Ver maiores arquivos em uma pasta:
+find . -type f -exec ls -lh {} \; | sort -k5 -rh | head -20
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+9. SCRIPT DE LIMPEZA COMPLETA
+═══════════════════════════════════════════════════════════════════════════════════
+
+Você pode criar um script para limpar tudo de uma vez:
+
+CRIAR ARQUIVO cleanup.sh:
+──────────────────────────
+
+cat > ~/cleanup.sh << 'EOF'
+#!/bin/bash
+
+echo "🧹 Iniciando limpeza do sistema..."
+
+# Limpeza do cache do usuário
+echo "📁 Limpando cache do usuário..."
+rm -rf ~/.cache/*
+
+# Limpeza do Chrome
+echo "🌐 Limpando cache do Chrome..."
+rm -rf ~/.config/google-chrome/Default/Cache/*
+rm -rf ~/.config/chromium/Default/Cache/*
+
+# Limpeza de temporários
+echo "🗑️  Limpando arquivos temporários..."
+sudo rm -rf /tmp/*
+
+# Limpeza do sistema (requer senha)
+echo "🔧 Limpando pacotes do sistema..."
+sudo apt autoremove -y
+sudo apt clean
+sudo apt autoclean
+
+# Limpeza do pip
+echo "🐍 Limpando cache do pip..."
+pip cache purge
+
+echo "✅ Limpeza concluída!"
+echo ""
+df -h
+
+EOF
+
+EXECUTAR SCRIPT:
+─────────────────
+chmod +x ~/cleanup.sh                   # Torna executável
+~/cleanup.sh                            # Executa o script
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+10. LIMPEZA POR PASTA - GUIA RÁPIDO
+═══════════════════════════════════════════════════════════════════════════════════
+
+📍 PASTA              │ COMANDO PARA LIMPAR              │ SEGURO?
+─────────────────────┼──────────────────────────────────┼─────────
+~/.cache             │ rm -rf ~/.cache/*                │ ✅ SIM
+~/.local/share/Trash │ rm -rf ~/.local/share/Trash/*    │ ✅ SIM
+~/Downloads          │ rm -rf ~/Downloads/*             │ ⚠️ CUIDADO
+~/.config/chrome     │ rm -rf ~/.config/google-chrome   │ ✅ SIM
+/tmp                 │ sudo rm -rf /tmp/*               │ ✅ SIM
+~/.bashrc history    │ cat /dev/null > ~/.bash_history  │ ✅ SIM
+~/.thumbnails       │ rm -rf ~/.thumbnails/*           │ ✅ SIM
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+11. MONITORAR ESPAÇO EM TEMPO REAL
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ESPAÇO CONSTANTEMENTE:
+────────────────────────────
+
+watch -n 5 'df -h'                      # Atualiza a cada 5 segundos
+
+VER PASTA MAIOR:
+─────────────────
+du -sh ~/* | sort -rh                   # Ordena por tamanho
+
+VER EM TEMPO REAL O QUE OCUPA:
+────────────────────────────────
+ncdu                                    # Ferramenta interativa
+(Instalar: sudo apt install ncdu)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+12. AGENDA DE LIMPEZA RECOMENDADA
+═══════════════════════════════════════════════════════════════════════════════════
+
+⏰ FREQUÊNCIA RECOMENDADA:
+
+SEMANAL:
+────────
+✓ Limpar cache do navegador
+✓ Limpar ~/Downloads
+✓ Limpar lixeira
+
+MENSAL:
+────────
+✓ apt autoremove (Ubuntu/Debian)
+✓ Limpar ~/.cache
+✓ Verificar espaço em disco
+
+TRIMESTRAL (3 meses):
+──────────────────────
+✓ Verificar arquivos duplicados
+✓ Remover arquivos antigos
+✓ Otimizar disco (desfragmentar em SSD? Não precisa!)
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+13. REFERÊNCIA RÁPIDA DE COMANDOS
+═══════════════════════════════════════════════════════════════════════════════════
+
+VER ESPAÇO:
+───────────
+df -h                                   # Espaço em disco
+du -sh ~/                               # Pasta do usuário
+ncdu                                    # Interativo
+
+LIMPAR CACHE:
+──────────────
+rm -rf ~/.cache/*                       # Cache do usuário
+rm -rf ~/.config/google-chrome/Default/Cache/*  # Chrome
+
+LIMPAR TEMP:
+─────────────
+sudo rm -rf /tmp/*                      # Temporários do sistema
+rm -rf ~/Downloads/*                    # Downloads
+
+LIMPAR SISTEMA:
+────────────────
+sudo apt autoremove                     # Remove pacotes não usados
+sudo apt clean                          # Remove cache de instalação
+sudo apt autoclean                      # Remove parcialmente baixados
+
+LIMPAR PYTHON:
+────────────────
+pip cache purge                         # Limpa cache do pip
+
+LIMPAR NODE:
+─────────────
+npm cache clean --force                 # Limpa cache do npm
+
+HISTÓRICO:
+───────────
+cat /dev/null > ~/.bash_history         # Limpa histórico de comandos
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+14. DICAS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════════
+
+⚠️ CUIDADOS:
+
+❌ NÃO DELETE:
+   ├─ /root (super usuário)
+   ├─ /etc (configurações)
+   ├─ /usr (programas)
+   ├─ /var/log (logs importantes)
+   └─ /opt (aplicativos)
+
+✅ DELETE COM CUIDADO:
+   ├─ ~/Downloads (pode ter arquivo importante)
+   ├─ /tmp (quando sistema está rodando)
+   └─ Arquivos do navegador (apaga histórico)
+
+✅ SEMPRE SEGURO:
+   ├─ ~/.cache/*
+   ├─ Lixeira
+   ├─ Cache do Chrome
+   └─ apt autoremove
+
+
+💡 DICAS:
+
+1. Use `du -sh` antes de deletar para ver quanto vai limpar
+2. Teste comando sem `-delete` antes de usar com `-delete`
+3. Faça backups de arquivos importantes antes de limpar
+4. Use `sudo` com cuidado - pode deletar coisas importantes
+5. Verifique espaço em disco antes e depois com `df -h`
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+15. TROUBLESHOOTING - DISCO CHEIO?
+═══════════════════════════════════════════════════════════════════════════════════
+
+PASSO 1: Ver quanto espaço tem
+────────────────────────────────
+df -h                                   # Vê uso de disco
+
+PASSO 2: Encontrar o que está ocupando
+─────────────────────────────────────────
+du -sh ~/* | sort -rh                   # Pasta do usuário
+du -sh /* 2>/dev/null | sort -rh        # Todo o sistema
+
+PASSO 3: Limpar conforme o culpado
+─────────────────────────────────────
+Se ~/Downloads é grande:
+  └─ rm -rf ~/Downloads/antigos
+
+Se ~/.cache é grande:
+  └─ rm -rf ~/.cache/*
+
+Se /var é grande:
+  └─ sudo journalctl --vacuum=100M      # Limpa logs
+
+Se /home é grande:
+  └─ Procure arquivos duplicados com: fdupes -r ~/
+
+PASSO 4: Verificar novamente
+──────────────────────────────
+df -h                                   # Deve ter mais espaço
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+📚 RESUMO FINAL:
+
+Limpe regularmente para:
+✅ Melhorar performance
+✅ Liberar espaço em disco
+✅ Sistema mais rápido
+✅ Menos problemas
+
+Comandos mais usados:
+• sudo apt autoremove     (Ubuntu/Debian)
+• rm -rf ~/.cache/*       (Cache do usuário)
+• df -h                   (Ver espaço)
+
+Use man [comando] para mais informações!
+
+═══════════════════════════════════════════════════════════════════════════════════
+            </pre>
+        </details>
+    </section>
+    <section id="killer-guide">
+        <h2>Guia de Gerenciamento de Processos (killer-process.txt)</h2>
+        <p>Identificação de processos pesados, sinais kill, monitoramento em tempo real.</p>
+        <details>
+            <summary>Clique para expandir o conteúdo completo</summary>
+            <pre>
+Guia completo sobre gerenciamento de processos no Linux: identificação de processos pesados, sinais kill, monitoramento em tempo real, sinais do sistema, processos zumbis, gerenciamento de recursos, ferramentas como htop, atop, ferramentas de diagnóstico, scripts de automação, troubleshooting de processos travados, e muito mais.
+            </pre>
+        </details>
+    </section>
+    <section id="shutdown-guide">
+        <h2>Guia de Controle de Energia (shutdown.txt)</h2>
+        <p>Controle de energia, agendamento, avisos aos usuários, scripts de automação.</p>
+        <details>
+            <summary>Clique para expandir o conteúdo completo</summary>
+            <pre>
+Guia completo sobre controle de energia no Linux: comandos shutdown, reboot, halt, poweroff, agendamento de desligamento, avisos aos usuários, scripts de automação, controle remoto, troubleshooting de problemas de energia, e muito mais.
+            </pre>
+        </details>
+    </section>
+    <footer>
+        <p>&copy; 2025 vsjunior - Linux Essentials</p>
+    </footer>
+</body>
+</html>

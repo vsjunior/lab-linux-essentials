@@ -59,6 +59,12 @@ lab-linux-essentials/
 | `maquina-aviao.txt` | Otimização completa do sistema, limpeza profunda, configuração para internet rápida | Avançado | 4-5 horas |
 | `tm-arquivos-pastas.txt` | Análise de espaço em disco, localização de arquivos grandes, gerenciamento de duplicatas | Intermediário | 2-3 horas |
 
+### 📝 Documentação e Ferramentas
+
+| Arquivo | Conteúdo | Nível | Tempo Estimado |
+|---------|----------|-------|----------------|
+| `markdown-guia.md` | Guia completo de Markdown: sintaxe, visualização HTML, ferramentas, dicas profissionais | Iniciante | 2-3 horas |
+
 ---
 
 ## 🚀 Plano de Estudos Recomendado

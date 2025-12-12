@@ -1,0 +1,1 @@
+No dia de hoje veremos os principais comandos de manipulação de diretórios e comandos de manipulação de arquivos.
